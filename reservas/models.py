@@ -21,11 +21,17 @@ class CheckInCheckOut(models.Model):
     reserva = models.OneToOneField(Reserva, on_delete=models.CASCADE)
 
     funcionario_checkin = models.ForeignKey(
-        Funcionario, on_delete=models.RESTRICT)
+        Funcionario, on_delete=models.RESTRICT,
+        related_name='checkins_realizados'
+    )
 
     data_checkin = models.DateTimeField()
 
     funcionario_checkout = models.ForeignKey(
-        Funcionario, on_delete=models.SET_NULL, null=True)
+        Funcionario,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='checkouts_realizados'
+    )
 
     data_checkout = models.DateTimeField(null=True)
