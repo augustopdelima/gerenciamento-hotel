@@ -27,10 +27,10 @@ class CheckInCheckOutAdmin(admin.ModelAdmin):
     ]
 
     search_fields = [
-        '-data_checkin',
+        'data_checkin',
         'funcionario_checkin__nome',
         'funcionario_checkin__nome',
-        '-data_checkout'
+        'data_checkout'
     ]
 
 
@@ -64,3 +64,5 @@ class ReservaAdmin(admin.ModelAdmin):
         'funcionario__nome',
         'cliente__nome'
     ]
+
+    ordering = ['-data_entrada', '-data_saida']
