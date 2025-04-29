@@ -1,6 +1,37 @@
 from django.contrib import admin
 
-from reservas.models import Reserva
+from reservas.models import Reserva, CheckInCheckOut, StatusReserva
+
+
+@admin.register(StatusReserva)
+class StatusReservaAdmin(admin.ModelAdmin):
+    list_display = [
+        'tag'
+    ]
+
+
+@admin.register(CheckInCheckOut)
+class CheckInCheckOutAdmin(admin.ModelAdmin):
+    list_display = [
+        'reserva',
+        'funcionario_checkin',
+        'funcionario_checkout',
+        'data_checkin',
+        'data_checkout',
+    ]
+
+    list_filter = [
+        'data_checkin',
+        'data_checkout',
+        'reserva'
+    ]
+
+    search_fields = [
+        '-data_checkin',
+        'funcionario_checkin__nome',
+        'funcionario_checkin__nome',
+        '-data_checkout'
+    ]
 
 
 @admin.register(Reserva)
