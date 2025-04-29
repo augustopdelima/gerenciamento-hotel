@@ -18,7 +18,7 @@ class Reserva(models.Model):
     funcionario = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
     status = models.ForeignKey(StatusReserva, on_delete=models.RESTRICT)
     quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
-    criada_em = models.DateField(auto_now_add=True)
+    criada_em = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'Reserva #{self.id} - Cliente: {self.cliente.nome} - Quarto: {self.quarto.numero}'
