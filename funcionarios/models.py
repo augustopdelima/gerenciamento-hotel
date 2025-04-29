@@ -11,3 +11,6 @@ class Funcionario(models.Model):
     cpf = models.CharField(max_length=11)
     email = models.CharField(max_length=254)
     cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Fucionário#{self.id}:{self.nome} - {self.cargo}'
