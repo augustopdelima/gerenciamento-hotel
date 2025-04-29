@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from quartos.models import Quarto, StatusQuarto
+from quartos.models import Quarto, StatusQuarto, TipoQuarto
 
 
 @admin.register(Quarto)
@@ -16,3 +16,8 @@ class StatusQuartoAdmin(admin.ModelAdmin):
     list_display = ['tag']
     list_filter = ['tag']
     search_fields = ['tag']
+
+
+@admin.register(TipoQuarto)
+class TipoQuartoAdmin(admin.ModelAdmin):
+    list_display = ['nome']
