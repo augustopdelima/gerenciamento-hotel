@@ -13,4 +13,4 @@ class Funcionario(models.Model):
     cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'Fucionário#{self.id}:{self.nome} - {self.cargo}'
+        return f'Funcionário#{self.id}:{self.nome} - {self.cargo}'
