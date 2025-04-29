@@ -1,6 +1,7 @@
 from django.db import models
 from clientes.models import Cliente
 from funcionarios.models import Funcionario
+from quartos.models import Quarto
 
 
 class StatusReserva(models.Model):
@@ -11,10 +12,16 @@ class StatusReserva(models.Model):
 
 
 class Reserva(models.Model):
-    data = models.DateField()
+    data_entrada = models.DateField()
+    data_saida = models.DateField()
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
     status = models.ForeignKey(StatusReserva, on_delete=models.RESTRICT)
+    quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
+    criada_em = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Reserva #{self.id} - Cliente: {self.cliente.nome} - Quarto: {self.quarto.numero}'
 
 
 class CheckInCheckOut(models.Model):
@@ -35,3 +42,9 @@ class CheckInCheckOut(models.Model):
     )
 
     data_checkout = models.DateTimeField(null=True)
+
+    def __str__(self):
+        checkout_str = self.data_checkout.strftime(
+            '%d/%m/%Y %H:%M') if self.data_checkout else "—"
+
+        return f'Reserva #{self.reserva.id} | Check-in: {self.data_checkin.strftime("%d/%m/%Y %H:%M")} | Check-out: {checkout_str}'
