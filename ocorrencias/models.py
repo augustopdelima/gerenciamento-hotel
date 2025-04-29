@@ -10,3 +10,6 @@ class Ocorrencia(models.Model):
     data_registro = models.DateField()
     registrado_por = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
     resolvido = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'Ocorrencia#{self.id}:{self.quarto.numero},{self.descricao}'
