@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from ocorrencias.models import Ocorrencia
+
+
+@admin.register(Ocorrencia)
+class OcorrenciaAdmin(admin.ModelAdmin):
+    list_display = ["descricao"]
