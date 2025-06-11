@@ -1,13 +1,6 @@
 from django.contrib import admin
 
-from reservas.models import Reserva, CheckInCheckOut, StatusReserva
-
-
-@admin.register(StatusReserva)
-class StatusReservaAdmin(admin.ModelAdmin):
-    list_display = [
-        'tag'
-    ]
+from reservas.models import Reserva, CheckInCheckOut
 
 
 @admin.register(CheckInCheckOut)

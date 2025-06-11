@@ -4,28 +4,34 @@ from funcionarios.models import Funcionario
 from quartos.models import Quarto
 
 
-class StatusReserva(models.Model):
-    tag = models.CharField(max_length=50, unique=True)
+STATUS_RESERVA_CHOICES = [
+    ('criada', 'Criada'),
+    ('em_andamento', 'Em Andamento'),
+    ('finalizada', 'Finalizada'),
+    ('cancelada', 'Cancelada'),
+]
 
-    def __str__(self):
-        return f"{self.tag}"
 
 
 class Reserva(models.Model):
     data_entrada = models.DateField()
     data_saida = models.DateField()
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.RESTRICT)
     funcionario = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
-    status = models.ForeignKey(StatusReserva, on_delete=models.RESTRICT)
-    quarto = models.ForeignKey(Quarto, on_delete=models.CASCADE)
+    quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
     criada_em = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_RESERVA_CHOICES,
+        default='criada',
+    )
 
     def __str__(self):
-        return f"Reserva #{self.pk} - Cliente: {self.cliente.nome} - Quarto: {self.quarto.numero}"
+        return f"Reserva #{self.pk} - Cliente: {self.cliente.nome} - Quarto: {self.quarto.numero} - Status:{self.status}"
 
 
 class CheckInCheckOut(models.Model):
-    reserva = models.OneToOneField(Reserva, on_delete=models.CASCADE)
+    reserva = models.OneToOneField(Reserva, on_delete=models.RESTRICT)
 
     funcionario_checkin = models.ForeignKey(
         Funcionario, on_delete=models.RESTRICT, related_name="checkins_realizados"
@@ -35,7 +41,7 @@ class CheckInCheckOut(models.Model):
 
     funcionario_checkout = models.ForeignKey(
         Funcionario,
-        on_delete=models.SET_NULL,
+        on_delete=models.RESTRICT,
         null=True,
         related_name="checkouts_realizados",
     )

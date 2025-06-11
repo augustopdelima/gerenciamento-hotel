@@ -22,7 +22,7 @@ class Quarto(models.Model):
         StatusQuarto, on_delete=models.RESTRICT, verbose_name="Status"
     )
     tipo = models.ForeignKey(
-        TipoQuarto, on_delete=models.SET_NULL, null=True, verbose_name="Tipo de Quarto"
+        TipoQuarto, on_delete=models.RESTRICT, null=True, verbose_name="Tipo de Quarto"
     )
 
     def __str__(self):
