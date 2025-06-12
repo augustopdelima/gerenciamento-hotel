@@ -10,6 +10,7 @@ class TipoQuarto(models.Model):
 
 class StatusQuarto(models.Model):
     tag = models.CharField(max_length=25, verbose_name="Status do Quarto")
+    descricao = models.TextField(max_length=256, null=True)
 
     def __str__(self):
         return f"{self.tag}"
