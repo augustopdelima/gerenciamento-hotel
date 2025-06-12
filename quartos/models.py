@@ -3,6 +3,8 @@ from django.db import models
 
 class TipoQuarto(models.Model):
     nome = models.CharField(max_length=100, unique=True)
+    banheiras = models.BooleanField(default=False)
+    quantidade_camas = models.IntegerField(default=1)
 
     def __str__(self):
         return f"{self.nome}"
@@ -13,7 +15,7 @@ class StatusQuarto(models.Model):
     descricao = models.TextField(max_length=256, null=True)
 
     def __str__(self):
-        return f"{self.tag}"
+        return f"{self.tag} - {self.descricao}"
 
 
 class Quarto(models.Model):
