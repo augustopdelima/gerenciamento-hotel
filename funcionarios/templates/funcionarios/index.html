@@ -1,4 +1,4 @@
-{% extends 'reservas/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
 
@@ -9,7 +9,7 @@
     {% if ativos %}
       <h2>Funcionários Cadastrados</h2>
       <div>
-        <a href="{% url 'cadastrar_funcionarios' %}" class="btn btn-primary">Adicionar Funcionários</a>
+        <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-primary">Adicionar Funcionários</a>
         <a href="{% url 'funcionarios_inativos' %}" class="btn btn-danger">Funcionários Inativos</a>
       </div>
     {% else %}
@@ -34,32 +34,35 @@
           <a href="{% url 'ordenar_funcionario' 'nome' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Nome</a>
         </th>
         <th>
-          <a href="{% url 'ordenar_funcionario' 'Email' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Email</a>
+          <a href="{% url 'ordenar_funcionario' 'email' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Email</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_funcionario' 'cargo' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Cargo</a>
         </th>
         <th>Ações</th>
       </tr>
     </thead>
     <tbody>
-      {% for cliente in clientes %}
+      {% for funcionario in funcionarios %}
         <tr>
-          <td>{{ cliente.nome }}</td>
-          <td>{{ cliente.email }}</td>
-          <td>{{ cliente.telefone }}</td>
+          <td>{{ funcionario.nome }}</td>
+          <td>{{ funcionario.email }}</td>
+          <td>{{ funcionario.cargo }}</td>
 
           {% if ativos%}
             <td>
-              <a href="{% url 'editar_cliente' cliente.id  %}" class="btn btn-sm btn-warning">Editar</a>
-              <a href="{% url 'excluir_cliente' cliente.id  %}" class="btn btn-sm btn-danger">Excluir</a>
+              <a href="{% url 'editar_funcionario' funcionario.id  %}" class="btn btn-sm btn-warning">Editar</a>
+              <a href="{% url 'excluir_funcionario' funcionario.id  %}" class="btn btn-sm btn-danger">Excluir</a>
             </td>
           {% else %}
             <td>
-              <a href="{% url 'ativar_cliente' cliente.id %}" class="btn btn-sm btn-warning">Ativar</a>
+              <a href="{% url 'ativar_funcionario' funcionario.id %}" class="btn btn-sm btn-warning">Ativar</a>
             </td>
           {% endif %}
         </tr>
       {% empty %}
         <tr>
-          <td colspan="4" class="text-center">Nenhum cliente encontrado.</td>
+          <td colspan="4" class="text-center">Nenhum funcionario encontrado.</td>
         </tr>
       {% endfor %}
     </tbody>

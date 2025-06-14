@@ -5,7 +5,7 @@ from .models import Funcionario, Cargo
 class FuncionarioForm(forms.ModelForm):
     class Meta:
         model = Funcionario
-        fields = ['nome', 'cpf', 'email', 'cargo']
+        fields = ['nome', 'email', 'cargo']
 
 
 class CargoForm(forms.ModelForm):
