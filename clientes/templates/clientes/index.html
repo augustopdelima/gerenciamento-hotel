@@ -39,6 +39,16 @@
         <th>
           <a href="{% url 'ordenar_cliente' 'telefone' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Telefone</a>
         </th>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'cpf' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Cpf</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'endereco' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Endereco</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'cep' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Cep</a>
+        </th>
+
         <th>Ações</th>
       </tr>
     </thead>
@@ -48,7 +58,9 @@
           <td>{{ cliente.nome }}</td>
           <td>{{ cliente.email }}</td>
           <td>{{ cliente.telefone }}</td>
-
+          <td>{{ cliente.cpf }}</td>
+          <td>{{ cliente.endereco }}</td>
+          <td>{{ cliente.cep }}</td>
           {% if ativos%}
             <td>
               <a href="{% url 'editar_cliente' cliente.id  %}" class="btn btn-sm btn-warning">Editar</a>
@@ -62,7 +74,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td colspan="4" class="text-center">Nenhum cliente encontrado.</td>
+          <td colspan="7" class="text-center">Nenhum cliente encontrado.</td>
         </tr>
       {% endfor %}
     </tbody>

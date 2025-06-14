@@ -39,7 +39,7 @@
                 </li>
                 <li>
                     <a href=""
-                        class="nav-link text-white {% if request.resolver_match.url_name == 'funcionarios' %}active bg-secondary{% endif %}">
+                        class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
                         Funcionários
                     </a>
                 </li>
