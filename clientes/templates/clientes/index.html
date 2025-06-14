@@ -1,0 +1,72 @@
+{% extends 'reservas/base.html' %}
+
+{% block content %}
+
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    {% if ativos %}
+      <h2>Clientes Cadastrados</h2>
+      <div>
+        <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">Novo Cliente</a>
+        <a href="{% url 'clientes_inativos' %}" class="btn btn-danger">Clientes Inativos</a>
+      </div>
+    {% else %}
+      <h2>Clientes Excluídos</h2>
+      <a href="{% url 'clientes' %}" class="btn btn-primary">Clientes Ativos</a> 
+    {% endif %}
+
+   
+  </div>
+  
+  <form method="get" class="d-flex mb-3" role="search">
+    <input type="text" name="busca" class="form-control me-2" placeholder="Buscar por nome" value="{{ query|default:'' }}">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </form>
+ 
+
+
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'nome' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Nome</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'email' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Email</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_cliente' 'telefone' %}?ativo={{ativos}}&busca={{query}}" class="text-white text-decoration-none">Telefone</a>
+        </th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+        <tr>
+          <td>{{ cliente.nome }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>{{ cliente.telefone }}</td>
+
+          {% if ativos%}
+            <td>
+              <a href="{% url 'editar_cliente' cliente.id  %}" class="btn btn-sm btn-warning">Editar</a>
+              <a href="{% url 'excluir_cliente' cliente.id  %}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+          {% else %}
+            <td>
+              <a href="{% url 'ativar_cliente' cliente.id %}" class="btn btn-sm btn-warning">Ativar</a>
+            </td>
+          {% endif %}
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" class="text-center">Nenhum cliente encontrado.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
