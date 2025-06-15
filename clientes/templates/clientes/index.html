@@ -8,7 +8,7 @@
 
     {% if ativos %}
       <h2>Clientes Cadastrados</h2>
-      <div>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <a href="{% url 'cadastrar_cliente' %}" class="btn btn-primary">Novo Cliente</a>
         <a href="{% url 'clientes_inativos' %}" class="btn btn-danger">Clientes Inativos</a>
       </div>

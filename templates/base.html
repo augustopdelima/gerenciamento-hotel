@@ -11,73 +11,75 @@
 
 <body>
 
-    <div class="d-flex">
+    <nav class="navbar navbar-dark bg-dark d-md-none">
+        <div class="container-fluid"> 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
 
-        <nav class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-white vh-100" style="width: 250px;">
-            <a href="{% url 'reservas' %}" class="d-flex align-items-center mb-3 text-white text-decoration-none">
-                <span class="fs-4">Hotel Manager</span>
-            </a>
-            <hr class="text-secondary">
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li>
-                    <a href="{% url 'reservas' %}"
-                        class="nav-link text-white {% if request.resolver_match.url_name == 'reservas' %}active bg-secondary{% endif %}">
-                        Reservas
-                    </a>
-                </li>
-                <li>
-                    <a href=""
-                        class="nav-link text-white {% if request.resolver_match.url_name == 'quartos' %}active bg-secondary{% endif %}">
-                        Quartos
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'clientes' %}"
-                        class="nav-link text-white {% if '/clientes/' in request.path %}active bg-secondary{% endif %}">
-                        Clientes
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'funcionarios' %}"
-                        class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
-                        Funcionários
-                    </a>
-                </li>
-                <li>
-                    <a href=""
-                        class="nav-link text-white {% if request.resolver_match.url_name == 'ocorrencias' %}active bg-secondary{% endif %}">
-                        Ocorrências
-                    </a>
-                </li>
-                <li>
-                    <a href=""
-                        class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
-                        Tarifas
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <div class="container-fluid">
+        <div class="row">
+           
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark text-white collapse show vh-100 p-3"> 
+                
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li>
+                        <a href="{% url 'reservas' %}"
+                            class="nav-link text-white {% if request.resolver_match.url_name == 'reservas' %}active bg-secondary{% endif %}">
+                            Reservas
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="nav-link text-white {% if request.resolver_match.url_name == 'quartos' %}active bg-secondary{% endif %}">
+                            Quartos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'clientes' %}"
+                            class="nav-link text-white {% if '/clientes/' in request.path %}active bg-secondary{% endif %}">
+                            Clientes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'funcionarios' %}"
+                            class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
+                            Funcionários
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="nav-link text-white {% if request.resolver_match.url_name == 'ocorrencias' %}active bg-secondary{% endif %}">
+                            Ocorrências
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#"
+                            class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
+                            Tarifas
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-
-
-
-        <main class="flex-grow-1 p-4">
-
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
-            {% block content %}
-
-            {% endblock %}
-        </main>
-
-
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
     </div>
 
 
