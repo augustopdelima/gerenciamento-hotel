@@ -17,6 +17,14 @@ ORDENACAO_STATUS_LOOKUP = {
     'descricao': 'descricao',
 }
 
+ORDENACAO_TIPOS_LOOKUP = {
+    'nome': 'nome',
+    'descricao': 'descricao',
+    'capacidade': 'capacidade',
+    'possui_varanda': 'possui_varanda',
+    'banheiras': 'banheiras',
+}
+
 # Quarto
 
 
@@ -198,3 +206,94 @@ def ordenar_status_view(request, campo):
     }
 
     return render(request, 'quartos/listar_status.html', dados)
+
+# Tipo
+
+
+def tipos(request):
+    query = request.GET.get('busca', '')
+
+    if query:
+        tipos = TipoQuarto.objects.filter(nome__icontains=query)
+    else:
+        tipos = TipoQuarto.objects.all()
+
+    dados = {
+        'tipos': tipos,
+        'query': query,
+    }
+
+    return render(request, 'quartos/listar_tipos.html', dados)
+
+
+def cadastrar_tipo(request):
+
+    if request.method == 'POST':
+        form = TipoQuartoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('tipos_quarto')
+        else:
+            print(form.errors)
+    else:
+        form = TipoQuartoForm()
+        dados = {
+            'form': form,
+        }
+
+    return render(request, 'quartos/cadastrar_tipo.html', dados)
+
+
+def editar_tipo(request, id):
+    try:
+        tipo = TipoQuarto.objects.get(id=id)
+    except:
+        return redirect('tipos_quarto')
+
+    if request.method == 'POST':
+        form = TipoQuartoForm(request.POST, instance=tipo)
+        if form.is_valid():
+            form.save()
+            return redirect('tipos_quarto')
+
+    form = TipoQuartoForm(instance=tipo)
+
+    dados = {
+        'form': form,
+        'tipo': tipo,
+    }
+
+    return render(request, 'quartos/editar_tipo.html', dados)
+
+
+def excluir_tipo(request, id):
+    try:
+        tipo = TipoQuarto.objects.get(id=id)
+        tipo.delete()
+        messages.success(request, "Tipo excluído com sucesso.")
+    except RestrictedError:
+        messages.error(
+            request, "Não é possível deletar o tipo pois há vinculos.")
+    except TipoQuarto.DoesNotExist:
+        messages.error(request, "Tipo não encontrado.")
+
+    return redirect("tipos_quarto")
+
+
+def ordenar_tipos_view(request, campo):
+    campo_ordenacao = ORDENACAO_TIPOS_LOOKUP(campo)
+    busca = request.GET.get('busca', '')
+
+    tipos = TipoQuarto.objects.all()
+
+    if busca:
+        tipos = tipos.filter(nome__icontains=busca)
+
+    tipos = tipos.order_by(campo_ordenacao)
+
+    dados = {
+        'tipos': tipos,
+        'query': busca,
+    }
+
+    return render(request, 'quartos/listar_tipos.html', dados)

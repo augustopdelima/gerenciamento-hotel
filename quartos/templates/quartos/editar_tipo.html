@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="container">
-  <h2 class="mb-4">Editar Quarto</h2>
+  <h2 class="mb-4">Editar Tipos</h2>
 
   <form method="POST">
     {% csrf_token %}
     {{ form|crispy }}
 
     <button type="submit" class="btn btn-success">Salvar</button>
-    <a href="{% url 'quartos' %}" class="btn btn-secondary">Cancelar</a>
+    <a href="{% url 'tipos_quarto' %}" class="btn btn-secondary">Cancelar</a>
   </form>
 </div>
 {% endblock %}
