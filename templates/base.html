@@ -7,9 +7,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <title>Sistema Gerenciamneto de Hotel</title>
+
+   <style> 
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+    </style> 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
     <nav class="navbar navbar-dark bg-dark d-md-none">
         <div class="container-fluid"> 
@@ -20,10 +27,10 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid flex-grow-1">
+        <div class="row h-100">
            
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark text-white collapse show vh-100 p-3"> 
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark text-white collapse show h-100 p-3"> 
                 
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
@@ -66,7 +73,7 @@
             </nav>
 
             
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4 mb-4">
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">

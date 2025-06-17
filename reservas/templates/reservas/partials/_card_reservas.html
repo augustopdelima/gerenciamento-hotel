@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  {% if reservas %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for reserva in reservas %}
+        <div class="col">
+          <div class="card h-100 border-primary shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">Reserva #{{ reserva.pk }}</h5>
+
+              <p class="mb-1"><strong>Cliente:</strong> {{ reserva.cliente.nome }}</p>
+              <p class="mb-1"><strong>Quarto:</strong> {{ reserva.quarto.numero }} ({{ reserva.quarto.tipo.nome }})</p>
+              <p class="mb-1"><strong>Entrada:</strong> {{ reserva.data_entrada|date:"d/m/Y" }}</p>
+              <p class="mb-1"><strong>Saída:</strong> {{ reserva.data_saida|date:"d/m/Y" }}</p>
+
+              <p>
+                <strong>Status:</strong>
+                <span class="badge 
+                  {% if reserva.status == 'criada' %}bg-secondary
+                  {% elif reserva.status == 'em_andamento' %}bg-warning text-dark
+                  {% elif reserva.status == 'finalizada' %}bg-success
+                  {% elif reserva.status == 'cancelada' %}bg-danger
+                  {% else %}bg-dark
+                  {% endif %}
+                ">
+                  {{ reserva.get_status_display }}
+                </span>
+              </p>
+            </div>
+            <div class="card-footer bg-transparent border-0 text-end">
+              <a href="#" class="btn btn-outline-primary btn-sm">
+                Detalhes
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">
+      Nenhuma reserva encontrada.
+    </div>
+  {% endif %}
+</div>
