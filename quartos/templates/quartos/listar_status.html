@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+    
+        <h2>Status Registrados</h2>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <a href="{% url 'cadastrar_status_quartos' %}" class="btn btn-primary">Novo Status</a>
+            <a href="{% url 'quartos' %}" class="btn btn-secondary">Listar Quartos</a>
+            <a href="{% url 'quartos'%}" class="btn btn-secondary">Listar Tipos de Quarto</a>
+        </div>
+ 
+    </div>
+
+   {% include 'partials/_busca.html' with placeholder_text="Buscar por tag" %}
+   
+ 
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>
+          <a href="{% url 'ordenar_status_quartos' 'tag' %}?busca={{query}}" class="text-white text-decoration-none">Tag</a>
+        </th>
+        <th>
+          <a href="{% url 'ordenar_status_quartos' 'descricao' %}?busca={{query}}" class="text-white text-decoration-none">Descrição</a>
+        </th>
+        
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for stats in status %}
+        <tr>
+          <td>{{ stats.tag }}</td>
+          <td>{{ stats.descricao }}</td> 
+          
+            <td>
+              <a href="{% url 'editar_status_quartos' stats.id  %}" class="btn btn-sm btn-warning">Editar</a>
+              <a href="{% url 'excluir_status_quartos' stats.id  %}" class="btn btn-sm btn-danger">Excluir</a>
+            </td>
+           
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7" class="text-center">Nenhum Quarto encontrado.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

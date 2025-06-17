@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Quarto
-from .forms import QuartoForm
+from .models import Quarto, StatusQuarto, TipoQuarto
+from .forms import QuartoForm, TipoQuartoForm, StatusQuartoForm
 from django.contrib import messages
 from django.db.models import RestrictedError
 
@@ -12,13 +12,19 @@ ORDENACAO_QUARTOS_LOOKUP = {
     'tipo': 'tipo__nome',
 }
 
+ORDENACAO_STATUS_LOOKUP = {
+    'tag': 'tag',
+    'descricao': 'descricao',
+}
+
+# Quarto
+
 
 def quartos(request):
     query = request.GET.get('busca', '')
 
     if query:
-        quartos = Quarto.objects.filter(
-            ativo=True, numero__icontains=query)
+        quartos = Quarto.objects.filter(numero__icontains=query)
     else:
         quartos = Quarto.objects.all()
 
@@ -67,7 +73,7 @@ def editar_quarto(request, id):
         'quarto': quarto,
     }
 
-    return render(request, 'quartos/editar_quarto.html', quarto)
+    return render(request, 'quartos/editar_quarto.html', dados)
 
 
 def excluir_quarto(request, id):
@@ -101,3 +107,94 @@ def ordenar_quartos_view(request, campo):
     }
 
     return render(request, 'quartos/index.html', dados)
+
+# Status
+
+
+def status(request):
+    query = request.GET.get('busca', '')
+
+    if query:
+        status = StatusQuarto.objects.filter(tag__icontains=query)
+    else:
+        status = StatusQuarto.objects.all()
+
+    dados = {
+        'status': status,
+        'query': query,
+    }
+
+    return render(request, 'quartos/listar_status.html', dados)
+
+
+def cadastrar_status(request):
+
+    if request.method == 'POST':
+        form = StatusQuartoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_status_quartos')
+        else:
+            print(form.errors)
+    else:
+        form = StatusQuartoForm()
+        dados = {
+            'form': form,
+        }
+
+    return render(request, 'quartos/cadastrar_status.html', dados)
+
+
+def editar_status(request, id):
+    try:
+        stats = StatusQuarto.objects.get(id=id)
+    except:
+        return redirect('listar_status_quartos')
+
+    if request.method == 'POST':
+        form = StatusQuartoForm(request.POST, instance=stats)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_status_quartos')
+
+    form = StatusQuartoForm(instance=stats)
+
+    dados = {
+        'form': form,
+        'statusquarto': stats,
+    }
+
+    return render(request, 'quartos/editar_status.html', dados)
+
+
+def excluir_status(request, id):
+    try:
+        stats = StatusQuarto.objects.get(id=id)
+        stats.delete()
+        messages.success(request, "Status excluído com sucesso.")
+    except RestrictedError:
+        messages.error(
+            request, "Não é possível deletar o status pois há vinculados.")
+    except StatusQuarto.DoesNotExist:
+        messages.error(request, "Status não encontrado.")
+
+    return redirect("listar_status_quartos")
+
+
+def ordenar_status_view(request, campo):
+    campo_ordenacao = ORDENACAO_STATUS_LOOKUP(campo)
+    busca = request.GET.get('busca', '')
+
+    status = StatusQuarto.objects.all()
+
+    if busca:
+        status = status.filter(tag__icontains=busca)
+
+    status = status.order_by(campo_ordenacao)
+
+    dados = {
+        'status': status,
+        'query': busca,
+    }
+
+    return render(request, 'quartos/listar_status.html', dados)
