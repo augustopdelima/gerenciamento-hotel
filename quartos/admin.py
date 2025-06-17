@@ -20,6 +20,6 @@ class StatusQuartoAdmin(admin.ModelAdmin):
 
 @admin.register(TipoQuarto)
 class TipoQuartoAdmin(admin.ModelAdmin):
-    list_display = ["nome", "descricao", "capacidade", "quantidade_camas"]
-    list_filter = ["nome", "capacidade", "quantidade_camas", "banheiras"]
+    list_display = ["nome", "descricao", "capacidade"]
+    list_filter = ["nome", "capacidade",  "banheiras"]
     search_fields = ["nome", "capacidade", "descricao"]

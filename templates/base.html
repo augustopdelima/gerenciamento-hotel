@@ -33,8 +33,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'quartos' %}active bg-secondary{% endif %}">
+                        <a href="{% url 'quartos' %}"
+                            class="nav-link text-white {% if '/quartos/' in request.path %}active bg-secondary{% endif %}">
                             Quartos
                         </a>
                     </li>
