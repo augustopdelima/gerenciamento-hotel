@@ -34,8 +34,8 @@
                 
                 <ul class="nav nav-pills flex-column mb-auto">
                     <li>
-                        <a href="{% url 'reservas' %}"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'reservas' %}active bg-secondary{% endif %}">
+                        <a href="{% url 'reservas:reservas' %}"
+                            class="nav-link text-white {% if request.resolver_match.app_name == 'reservas'  %}active bg-secondary{% endif %}">
                             Reservas
                         </a>
                     </li>

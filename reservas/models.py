@@ -12,7 +12,6 @@ STATUS_RESERVA_CHOICES = [
 ]
 
 
-
 class Reserva(models.Model):
     data_entrada = models.DateField()
     data_saida = models.DateField()
@@ -25,6 +24,8 @@ class Reserva(models.Model):
         choices=STATUS_RESERVA_CHOICES,
         default='criada',
     )
+
+    ativa = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Reserva #{self.pk} - Cliente: {self.cliente.nome} - Quarto: {self.quarto.numero} - Status:{self.status}"

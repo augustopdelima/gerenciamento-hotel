@@ -12,10 +12,25 @@
   </div>
   
   <div class="d-flex flex-wrap align-items-center gap-2">
-    <a href="{% url 'cadastrar_reserva' %}" class="btn btn-success">Adicionar Reservas</a> 
+    <a href="{% url 'reservas:cadastrar_reserva' %}" class="btn btn-success">Adicionar Reservas</a> 
   </div>
 
 </div>
+
+<div class="d-flex flex-wrap gap-3 align-items-center bg-info-subtle text-white p-3 rounded mb-3 justify-content-between">
+  <div>
+    <a href="{% url 'reservas:ordenar_reserva' 'cliente' %}?busca={{ query }}&ativo={{ativos}}" class="btn btn-outline-primary"> Ordenar por Cliente</a>
+    <a href="{% url 'reservas:ordenar_reserva' 'data_entrada' %}?busca={{ query }}&ativo={{ativos}}" class="btn btn-outline-primary">Ordenar por Data Entrada</a>
+    <a href="{% url 'reservas:ordenar_reserva' 'data_saida' %}?busca={{ query }}&ativo={{ativos}}" class="btn btn-outline-primary">Ordenar por Data saida</a>
+    <a href="{% url 'reservas:ordenar_reserva' 'status' %}?busca={{ query }}&ativo={{ativos}}" class="btn btn-outline-primary">Ordenar por Status</a>
+  </div>
+  {% if ativos %}
+   <a href="{% url 'reservas:reservas_inativas' %}" class="btn btn-outline-danger">Listar reservas inativas</a> 
+  {% else %}
+    <a href="{% url 'reservas:reservas' %}" class="btn btn-outline-success">Listar reservas ativas </a>
+  {% endif %}
+</div>
+
 
 {% include 'reservas/partials/_card_reservas.html' with reservas=reservas %}
 
