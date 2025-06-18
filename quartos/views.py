@@ -99,7 +99,7 @@ def excluir_quarto(request, id):
 
 
 def ordenar_quartos_view(request, campo):
-    campo_ordenacao = ORDENACAO_QUARTOS_LOOKUP(campo)
+    campo_ordenacao = ORDENACAO_QUARTOS_LOOKUP[campo]
     busca = request.GET.get('busca', '')
 
     quartos = Quarto.objects.all()
@@ -190,7 +190,7 @@ def excluir_status(request, id):
 
 
 def ordenar_status_view(request, campo):
-    campo_ordenacao = ORDENACAO_STATUS_LOOKUP(campo)
+    campo_ordenacao = ORDENACAO_STATUS_LOOKUP[campo]
     busca = request.GET.get('busca', '')
 
     status = StatusQuarto.objects.all()
@@ -281,7 +281,7 @@ def excluir_tipo(request, id):
 
 
 def ordenar_tipos_view(request, campo):
-    campo_ordenacao = ORDENACAO_TIPOS_LOOKUP(campo)
+    campo_ordenacao = ORDENACAO_TIPOS_LOOKUP[campo]
     busca = request.GET.get('busca', '')
 
     tipos = TipoQuarto.objects.all()

@@ -3,6 +3,15 @@ from .models import Cliente
 from .forms import ClienteForm
 from django.contrib import messages
 
+ORDENACAO_CLIENTES_LOOKUP = {
+    "nome": "nome",
+    "email": "email",
+    "telefone": "telefone",
+    "cpf": "cpf",
+    "endereco": "endereco",
+    "cep": "cep",
+}
+
 
 def clientes(request):
     query = request.GET.get('busca', '')
@@ -110,13 +119,14 @@ def ordenar_clientes_view(request, campo):
     busca = request.GET.get('busca', '')
     ativo_param = request.GET.get('ativo', 'true').lower()
     ativo = ativo_param == 'true'
+    campo_ordenacao = ORDENACAO_CLIENTES_LOOKUP[campo]
 
     clientes = Cliente.objects.filter(ativo=ativo)
 
     if busca:
         clientes = clientes.filter(nome__icontains=busca)
 
-    clientes = clientes.order_by(campo)
+    clientes = clientes.order_by(campo_ordenacao)
 
     dados = {
         'clientes': clientes,

@@ -4,6 +4,16 @@ from .forms import FuncionarioForm, CargoForm
 from django.contrib import messages
 from django.db.models import RestrictedError
 
+ORDENCAO_FUNCIONARIO_LOOKUP = {
+    "nome": "nome",
+    "email": "email",
+    "cargo": "cargo__nome_funcao"
+}
+
+ORDENCAO_CARGO_LOOKUP = {
+    "nome_funcao": "nome_funcao"
+}
+
 
 def funcionarios(request):
     query = request.GET.get('busca', '')
@@ -115,13 +125,14 @@ def ordenar_funcionarios_view(request, campo):
     busca = request.GET.get('busca', '')
     ativo_param = request.GET.get('ativo', 'true').lower()
     ativo = ativo_param == 'true'
+    campo_ordencao = ORDENCAO_FUNCIONARIO_LOOKUP[campo]
 
     funcionarios = Funcionario.objects.filter(ativo=ativo)
 
     if busca:
         funcionarios = funcionarios.filter(nome__icontains=busca)
 
-    funcionarios = funcionarios.order_by(campo)
+    funcionarios = funcionarios.order_by(campo_ordencao)
 
     dados = {
         'funcionarios': funcionarios,
@@ -203,13 +214,14 @@ def excluir_cargo(request, id):
 
 def ordenar_cargos_view(request, campo):
     busca = request.GET.get('busca', '')
+    campo_ordenacao = ORDENCAO_CARGO_LOOKUP[campo]
 
     cargos = Cargo.objects.all()
 
     if busca:
         cargos = cargos.filter(nome_funcao__icontains=busca)
 
-    cargos = cargos.order_by(campo)
+    cargos = cargos.order_by(campo_ordenacao)
 
     dados = {
         'cargos': cargos,
