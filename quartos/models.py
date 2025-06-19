@@ -12,7 +12,7 @@ class TipoQuarto(models.Model):
         help_text="O quarto possui banheiras?")
 
     def __str__(self):
-        return f"{self.nome} - {self.descricao} - {self.capacidade}"
+        return f"{self.nome}"
 
 
 class StatusQuarto(models.Model):

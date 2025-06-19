@@ -5,7 +5,7 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Funcionários Cadastrados</h2>
+        <h2>Cargos Cadastrados</h2>
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             <a href="{% url 'cadastrar_cargo' %}" class="btn btn-primary">Adicionar Cargo</a>
             <a href="{% url 'funcionarios' %}" class="btn btn-primary">Listar Funcionários</a>
@@ -15,7 +15,7 @@
 
    {% include 'partials/_busca.html' with placeholder_text="Buscar por nome" %}  
 
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered mt-4">
         <thead class="table-dark">
             <tr>
                 <th>
