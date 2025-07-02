@@ -9,8 +9,7 @@
     
         <h2>Tipos Registrados</h2>
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-            <a href="{% url 'cadastrar_tipo' %}" class="btn btn-primary">Novo Tipo</a>
-            <a href="{% url 'listar_status_quartos' %}" class="btn btn-secondary">Listar Status</a>
+            <a href="{% url 'cadastrar_tipo' %}" class="btn btn-primary">Novo Tipo</a> 
             <a href="{% url 'quartos'%}" class="btn btn-secondary">Listar Quartos</a>
         </div>
  
@@ -31,13 +30,7 @@
         <th>
           <a href="{% url 'ordenar_tipo' 'capacidade' %}?busca={{query}}" class="text-white text-decoration-none">Capacidade</a>
         </th>
-        <th>
-          <a href="{% url 'ordenar_tipo' 'possui_varanda' %}?busca={{query}}" class="text-white text-decoration-none">Possui varanda</a>
-        </th>
-        <th>
-          <a href="{% url 'ordenar_tipo' 'banheiras' %}?busca={{query}}" class="text-white text-decoration-none">Possui banheiras</a>
-        </th>
-        
+         
         <th>Ações</th>
       </tr>
     </thead>
@@ -46,9 +39,7 @@
         <tr>
           <td>{{ tipo.nome }}</td>
           <td>{{ tipo.descricao }}</td>
-          <td>{{ tipo.capacidade }}</td>
-          <td>{{ tipo.possui_varanda }}</td>
-          <td>{{ tipo.banheiras }}</td>
+          <td>{{ tipo.capacidade }}</td> 
           
             <td>
               <a href="{% url 'editar_tipo' tipo.id  %}" class="btn btn-sm btn-warning">Editar</a>

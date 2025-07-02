@@ -1,19 +1,12 @@
 # forms.py
 from django import forms
-from .models import TipoQuarto, StatusQuarto, Quarto
+from .models import TipoQuarto, Quarto
 
 
 class TipoQuartoForm(forms.ModelForm):
     class Meta:
         model = TipoQuarto
-        fields = ['nome', 'descricao', 'capacidade',
-                  'possui_varanda', 'banheiras']
-
-
-class StatusQuartoForm(forms.ModelForm):
-    class Meta:
-        model = StatusQuarto
-        fields = ['tag', 'descricao']
+        fields = ['nome', 'descricao', 'capacidade']
 
 
 class QuartoForm(forms.ModelForm):
