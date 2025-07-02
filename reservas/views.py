@@ -76,7 +76,7 @@ def excluir_reserva(request, id):
         reserva = Reserva.objects.get(id=id)
         reserva.ativa = False
         reserva.save()
-        messages.success(request, "Reserva excluído com sucesso.")
+        messages.success(request, "Reserva excluída com sucesso.")
     except Reserva.DoesNotExist:
         messages.error(request, "Reserva não encontrado.")
 
