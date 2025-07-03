@@ -1,0 +1,20 @@
+<header class="d-md-none p-2 bg-dark text-white">
+    <button class="btn btn-outline-light"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#sidebarMenuOffcanvas"
+            aria-controls="sidebarMenuOffcanvas">
+        <span class="navbar-toggler-icon"></span> Menu
+    </button>
+</header>
+
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1"
+     id="sidebarMenuOffcanvas" aria-labelledby="sidebarMenuOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="sidebarMenuOffcanvasLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        {% include "partials/_menu_itens.html" %}
+    </div>
+</div>

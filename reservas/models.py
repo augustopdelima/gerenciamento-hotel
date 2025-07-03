@@ -1,6 +1,6 @@
 from django.db import models
 from clientes.models import Cliente
-from funcionarios.models import Funcionario
+from django.contrib.auth.models import User
 from quartos.models import Quarto
 
 
@@ -16,7 +16,7 @@ class Reserva(models.Model):
     data_entrada = models.DateField()
     data_saida = models.DateField()
     cliente = models.ForeignKey(Cliente, on_delete=models.RESTRICT)
-    funcionario = models.ForeignKey(Funcionario, on_delete=models.RESTRICT)
+    funcionario = models.ForeignKey(User, on_delete=models.RESTRICT)
     quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
     criada_em = models.DateTimeField(auto_now_add=True)
     status = models.CharField(
@@ -35,13 +35,13 @@ class CheckInCheckOut(models.Model):
     reserva = models.OneToOneField(Reserva, on_delete=models.RESTRICT)
 
     funcionario_checkin = models.ForeignKey(
-        Funcionario, on_delete=models.RESTRICT, related_name="checkins_realizados"
+        User, on_delete=models.RESTRICT, related_name="checkins_realizados"
     )
 
     data_checkin = models.DateTimeField()
 
     funcionario_checkout = models.ForeignKey(
-        Funcionario,
+        User,
         on_delete=models.RESTRICT,
         null=True,
         related_name="checkouts_realizados",

@@ -1,28 +1,28 @@
-from django.shortcuts import render, redirect
-from .models import Funcionario, Cargo
-from .forms import FuncionarioForm, CargoForm
 from django.contrib import messages
-from django.db.models import RestrictedError
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
-ORDENCAO_FUNCIONARIO_LOOKUP = {
-    "nome": "nome",
+from .forms import FuncionarioForm
+
+
+ORDER_FUNCIONARIO_LOOKUP = {
+    "nome": "first_name",
     "email": "email",
-    "cargo": "cargo__nome_funcao"
-}
-
-ORDENCAO_CARGO_LOOKUP = {
-    "nome_funcao": "nome_funcao"
+    "cargo": "groups__name",
 }
 
 
+@login_required
 def funcionarios(request):
     query = request.GET.get('busca', '')
 
     if query:
-        funcionarios = Funcionario.objects.filter(
-            ativo=True, nome__icontains=query)
+        funcionarios = User.objects.filter(
+            is_active=True, username__icontains=query)
     else:
-        funcionarios = Funcionario.objects.filter(ativo=True)
+        funcionarios = User.objects.filter(is_active=True)
 
     dados = {
         'funcionarios': funcionarios,
@@ -33,14 +33,15 @@ def funcionarios(request):
     return render(request, 'funcionarios/index.html', dados)
 
 
+@login_required
 def funcionarios_excluidos(request):
     query = request.GET.get('busca', '')
 
     if query:
-        funcionarios = Funcionario.objects.filter(
-            ativo=False, nome__icontains=query)
+        funcionarios = User.objects.filter(
+            is_active=False, username__icontains=query)
     else:
-        funcionarios = Funcionario.objects.filter(ativo=False)
+        funcionarios = User.objects.filter(is_active=False)
 
     dados = {
         'funcionarios': funcionarios,
@@ -51,6 +52,7 @@ def funcionarios_excluidos(request):
     return render(request, 'funcionarios/index.html', dados)
 
 
+@login_required
 def cadastrar_funcionario(request):
 
     if request.method == 'POST':
@@ -69,17 +71,21 @@ def cadastrar_funcionario(request):
     return render(request, 'funcionarios/cadastrar_funcionario.html', dados)
 
 
+@login_required
 def editar_funcionario(request, id):
     try:
-        funcionario = Funcionario.objects.get(id=id)
+        funcionario = User.objects.get(pk=id)
     except:
-        return redirect('clientes')
+        return redirect('funcionarios')
 
     if request.method == 'POST':
         form = FuncionarioForm(request.POST, instance=funcionario)
         if form.is_valid():
             form.save()
+            messages.success(request, "Funcionário editado!")
             return redirect('funcionarios')
+        else:
+            messages.error(request, form.error_messages)
 
     form = FuncionarioForm(instance=funcionario)
 
@@ -91,28 +97,30 @@ def editar_funcionario(request, id):
     return render(request, 'funcionarios/editar_funcionario.html', dados)
 
 
+@login_required
 def excluir_funcionario(request, id):
     try:
-        funcionario = Funcionario.objects.get(id=id)
-        funcionario.ativo = False
-        funcionario.save()
+        funcionario = User.objects.get(pk=id)
+        funcionario.is_active = False
+        funcionario.save(update_fields=["is_active"])
         messages.success(request, "Funcionário excluído com sucesso.")
-    except Funcionario.DoesNotExist:
+    except User.DoesNotExist:
         messages.error(request, "Funcionário não encontrado.")
 
     return redirect("funcionarios")
 
 
+@login_required
 def ativar_funcionario(request, id):
     try:
-        funcionario = Funcionario.objects.get(id=id)
-    except Funcionario.DoesNotExist:
+        funcionario = User.objects.get(pk=id)
+    except User.DoesNotExist:
         messages.error(request, "Funcionario não encontrado.")
         return redirect('funcionarios_inativos')
 
-    if funcionario.ativo == False:
-        funcionario.ativo = True
-        funcionario.save()
+    if funcionario.is_active == False:
+        funcionario.is_active = True
+        funcionario.save(update_fields=["is_active"])
         messages.success(request, "Funcionário reativado com sucesso.")
 
     else:
@@ -121,16 +129,17 @@ def ativar_funcionario(request, id):
     return redirect('funcionarios_inativos')
 
 
+@login_required
 def ordenar_funcionarios_view(request, campo):
     busca = request.GET.get('busca', '')
     ativo_param = request.GET.get('ativo', 'true').lower()
     ativo = ativo_param == 'true'
-    campo_ordencao = ORDENCAO_FUNCIONARIO_LOOKUP[campo]
+    campo_ordencao = ORDER_FUNCIONARIO_LOOKUP[campo]
 
-    funcionarios = Funcionario.objects.filter(ativo=ativo)
+    funcionarios = User.objects.filter(is_active=ativo)
 
     if busca:
-        funcionarios = funcionarios.filter(nome__icontains=busca)
+        funcionarios = funcionarios.filter(username__icontains=busca)
 
     funcionarios = funcionarios.order_by(campo_ordencao)
 
@@ -142,90 +151,25 @@ def ordenar_funcionarios_view(request, campo):
 
     return render(request, 'funcionarios/index.html', dados)
 
-# Cargo
 
-
-def cargos(request):
-    query = request.GET.get('busca', '')
-
-    if query:
-        cargos = Cargo.objects.filter(nome__icontains=query)
-    else:
-        cargos = Cargo.objects.all()
-
-    dados = {
-        'cargos': cargos,
-        'query': query,
-    }
-
-    return render(request, 'funcionarios/listar_cargos.html', dados)
-
-
-def cadastrar_cargo(request):
+# Login e Logout
+def login_view(request):
     if request.method == 'POST':
-        form = CargoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('cargos')
-    else:
-        form = CargoForm()
-        dados = {
-            'form': form,
-        }
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    return render(request, 'funcionarios/cadastrar_cargo.html', dados)
+        verificacao_user = authenticate(
+            request, username=username, password=password)
 
+        if verificacao_user is not None:
+            login(request, verificacao_user)
+            return redirect('reservas:reservas')
+        else:
+            messages.error(request, 'Usuário ou senha inválidos.')
 
-def editar_cargo(request, id):
-    try:
-        cargo = Cargo.objects.get(id=id)
-    except:
-        return redirect('cargo')
-
-    if request.method == 'POST':
-        form = CargoForm(request.POST, instance=cargo)
-        if form.is_valid():
-            form.save()
-            return redirect('cargos')
-
-    form = CargoForm(instance=cargo)
-
-    dados = {
-        'form': form,
-        'cargo': cargo,
-    }
-
-    return render(request, 'funcionarios/editar_cargo.html', dados)
+    return render(request, 'funcionarios/login.html')
 
 
-def excluir_cargo(request, id):
-    try:
-        cargo = Cargo.objects.get(id=id)
-        cargo.delete()
-        messages.success(request, "Cargo excluído com sucesso.")
-    except RestrictedError:
-        messages.error(
-            request, "Não é possível deletar o cargo pois há funcionários vinculados.")
-    except Cargo.DoesNotExist:
-        messages.error(request, "Cargo não encontrado.")
-
-    return redirect("cargos")
-
-
-def ordenar_cargos_view(request, campo):
-    busca = request.GET.get('busca', '')
-    campo_ordenacao = ORDENCAO_CARGO_LOOKUP[campo]
-
-    cargos = Cargo.objects.all()
-
-    if busca:
-        cargos = cargos.filter(nome_funcao__icontains=busca)
-
-    cargos = cargos.order_by(campo_ordenacao)
-
-    dados = {
-        'cargos': cargos,
-        'query': busca,
-    }
-
-    return render(request, 'funcionarios/listar_cargos.html', dados)
+def logout_view(request):
+    logout(request)
+    return redirect('login')
