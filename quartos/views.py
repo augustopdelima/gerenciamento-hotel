@@ -3,6 +3,7 @@ from .models import Quarto, TipoQuarto
 from .forms import QuartoForm, TipoQuartoForm
 from django.contrib import messages
 from django.db.models import RestrictedError
+from django.contrib.auth.decorators import login_required
 
 ORDENACAO_QUARTOS_LOOKUP = {
     'numero': 'numero',
@@ -16,13 +17,12 @@ ORDENACAO_TIPOS_LOOKUP = {
     'nome': 'nome',
     'descricao': 'descricao',
     'capacidade': 'capacidade',
-    'possui_varanda': 'possui_varanda',
-    'banheiras': 'banheiras',
 }
 
 # Quarto
 
 
+@login_required
 def quartos(request):
     query = request.GET.get('busca', '')
 
@@ -39,6 +39,7 @@ def quartos(request):
     return render(request, 'quartos/index.html', dados)
 
 
+@login_required
 def cadastrar_quarto(request):
 
     if request.method == 'POST':
@@ -57,6 +58,7 @@ def cadastrar_quarto(request):
     return render(request, 'quartos/cadastrar_quarto.html', dados)
 
 
+@login_required
 def editar_quarto(request, id):
     try:
         quarto = Quarto.objects.get(id=id)
@@ -79,6 +81,7 @@ def editar_quarto(request, id):
     return render(request, 'quartos/editar_quarto.html', dados)
 
 
+@login_required
 def excluir_quarto(request, id):
     try:
         quarto = Quarto.objects.get(id=id)
@@ -93,6 +96,7 @@ def excluir_quarto(request, id):
     return redirect("quartos")
 
 
+@login_required
 def ordenar_quartos_view(request, campo):
     campo_ordenacao = ORDENACAO_QUARTOS_LOOKUP[campo]
     busca = request.GET.get('busca', '')
@@ -114,6 +118,7 @@ def ordenar_quartos_view(request, campo):
 # Tipo
 
 
+@login_required
 def tipos(request):
     query = request.GET.get('busca', '')
 
@@ -130,6 +135,7 @@ def tipos(request):
     return render(request, 'quartos/listar_tipos.html', dados)
 
 
+@login_required
 def cadastrar_tipo(request):
 
     if request.method == 'POST':
@@ -148,6 +154,7 @@ def cadastrar_tipo(request):
     return render(request, 'quartos/cadastrar_tipo.html', dados)
 
 
+@login_required
 def editar_tipo(request, id):
     try:
         tipo = TipoQuarto.objects.get(id=id)
@@ -170,6 +177,7 @@ def editar_tipo(request, id):
     return render(request, 'quartos/editar_tipo.html', dados)
 
 
+@login_required
 def excluir_tipo(request, id):
     try:
         tipo = TipoQuarto.objects.get(id=id)
@@ -184,6 +192,7 @@ def excluir_tipo(request, id):
     return redirect("tipos_quarto")
 
 
+@login_required
 def ordenar_tipos_view(request, campo):
     campo_ordenacao = ORDENACAO_TIPOS_LOOKUP[campo]
     busca = request.GET.get('busca', '')

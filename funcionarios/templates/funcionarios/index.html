@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load cargo_filters %}
 {% block content %}
 
 
@@ -10,8 +10,7 @@
       <h2>Funcionários Cadastrados</h2>
       <div class="d-grid gap-2 d-md-flex justify-content-md-start">
         <a href="{% url 'cadastrar_funcionario' %}" class="btn btn-primary">Adicionar Funcionários</a>
-        <a href="{% url 'funcionarios_inativos' %}" class="btn btn-danger">Funcionários Inativos</a>
-        <a href="{% url 'cargos' %}" class="btn btn-danger">Cargos</a>
+        <a href="{% url 'funcionarios_inativos' %}" class="btn btn-danger">Funcionários Inativos</a> 
       </div> 
     {% else %}
       <h2>Funcionários Excluídos</h2>
@@ -41,9 +40,9 @@
     <tbody>
       {% for funcionario in funcionarios %}
         <tr>
-          <td>{{ funcionario.nome }}</td>
+          <td>{{ funcionario.first_name }}</td>
           <td>{{ funcionario.email }}</td>
-          <td>{{ funcionario.cargo }}</td>
+          <td>{{ funcionario|cargo_nome }}</td>
 
           {% if ativos%}
             <td>

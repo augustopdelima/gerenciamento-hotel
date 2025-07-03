@@ -18,70 +18,15 @@
 
 <body class="d-flex flex-column min-vh-100">
 
-    <nav class="navbar navbar-dark bg-dark d-md-none">
-        <div class="container-fluid"> 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
-                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
+        {% include "partials/_menu_menor.html" %}
 
-    <div class="container-fluid flex-grow-1">
+        <div class="container-fluid flex-grow-1">
         <div class="row h-100">
            
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark text-white collapse show h-100 p-3"> 
-                
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li>
-                        <a href="{% url 'reservas:reservas' %}"
-                            class="nav-link text-white {% if request.resolver_match.app_name == 'reservas'  %}active bg-secondary{% endif %}">
-                            Reservas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'quartos' %}"
-                            class="nav-link text-white {% if '/quartos/' in request.path %}active bg-secondary{% endif %}">
-                            Quartos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'clientes' %}"
-                            class="nav-link text-white {% if '/clientes/' in request.path %}active bg-secondary{% endif %}">
-                            Clientes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'funcionarios' %}"
-                            class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
-                            Funcionários
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'ocorrencias' %}active bg-secondary{% endif %}">
-                            Ocorrências
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
-                            Tarifas
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-
-            
+           {% include "partials/_menu.html" %}        
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4 mb-4">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+               
+                {% include "partials/_messages.html"%}
 
                 {% block content %}
                 {% endblock %}

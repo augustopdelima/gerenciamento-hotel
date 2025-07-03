@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from .models import Cliente
 from .forms import ClienteForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
 
 ORDENACAO_CLIENTES_LOOKUP = {
     "nome": "nome",
@@ -13,6 +15,7 @@ ORDENACAO_CLIENTES_LOOKUP = {
 }
 
 
+@login_required
 def clientes(request):
     query = request.GET.get('busca', '')
 
@@ -30,6 +33,7 @@ def clientes(request):
     return render(request, 'clientes/index.html', dados)
 
 
+@login_required
 def clientes_excluidos(request):
     query = request.GET.get('busca', '')
 
@@ -47,6 +51,7 @@ def clientes_excluidos(request):
     return render(request, 'clientes/index.html', dados)
 
 
+@login_required
 def cadastrar_cliente(request):
 
     if request.method == 'POST':
@@ -63,6 +68,7 @@ def cadastrar_cliente(request):
     return render(request, 'clientes/cadastrar_cliente.html', dados)
 
 
+@login_required
 def editar_cliente(request, id):
     try:
         cliente = Cliente.objects.get(id=id)
@@ -85,6 +91,7 @@ def editar_cliente(request, id):
     return render(request, 'clientes/editar_cliente.html', dados)
 
 
+@login_required
 def excluir_cliente(request, id):
     try:
         cliente = Cliente.objects.get(id=id)
@@ -97,6 +104,7 @@ def excluir_cliente(request, id):
     return redirect("clientes")
 
 
+@login_required
 def ativar_cliente(request, id):
     try:
         cliente = Cliente.objects.get(id=id)
@@ -115,6 +123,7 @@ def ativar_cliente(request, id):
     return redirect('clientes_inativos')
 
 
+@login_required
 def ordenar_clientes_view(request, campo):
     busca = request.GET.get('busca', '')
     ativo_param = request.GET.get('ativo', 'true').lower()
