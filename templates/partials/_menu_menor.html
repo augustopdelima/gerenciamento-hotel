@@ -1,9 +1,20 @@
-<nav class="navbar navbar-dark bg-dark d-md-none">
-        <div class="container-fluid"> 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
-                aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
+<header class="d-md-none p-2 bg-dark text-white">
+    <button class="btn btn-outline-light"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#sidebarMenuOffcanvas"
+            aria-controls="sidebarMenuOffcanvas">
+        <span class="navbar-toggler-icon"></span> Menu
+    </button>
+</header>
 
+<div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1"
+     id="sidebarMenuOffcanvas" aria-labelledby="sidebarMenuOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="sidebarMenuOffcanvasLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        {% include "partials/_menu_itens.html" %}
+    </div>
+</div>

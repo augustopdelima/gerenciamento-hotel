@@ -1,41 +1,4 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark text-white collapse show h-100 p-3"> 
-                
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li>
-                        <a href="{% url 'reservas:reservas' %}"
-                            class="nav-link text-white {% if request.resolver_match.app_name == 'reservas'  %}active bg-secondary{% endif %}">
-                            Reservas
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'quartos' %}"
-                            class="nav-link text-white {% if '/quartos/' in request.path %}active bg-secondary{% endif %}">
-                            Quartos
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'clientes' %}"
-                            class="nav-link text-white {% if '/clientes/' in request.path %}active bg-secondary{% endif %}">
-                            Clientes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'funcionarios' %}"
-                            class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
-                            Funcionários
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'ocorrencias' %}active bg-secondary{% endif %}">
-                            Ocorrências
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#"
-                            class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
-                            Tarifas
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+<nav id="sidebarMenu"
+     class="col-md-3 col-lg-2 d-none d-md-block bg-dark text-white collapse show h-100 p-3">
+    {% include "partials/_menu_itens.html" %}
+</nav>
