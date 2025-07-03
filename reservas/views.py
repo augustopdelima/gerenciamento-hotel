@@ -139,3 +139,41 @@ def listar_inativas(request):
     }
 
     return render(request, 'reservas/index.html', dados)
+
+
+def gerar_relatorio_reservas(request):
+    data_inicio = request.GET.get('data_inicio', '')
+    data_fim = request.GET.get('data_fim', '')
+    cliente = request.GET.get('cliente', '')
+    status = request.GET.get('status', '')
+    quarto = request.GET.get('quarto', '')
+
+    reservas = Reserva.objects.all()
+
+    if data_inicio:
+        try:
+            reservas = reservas.filter(data_entrada__gte=datetime.strptime(data_inicio, '%Y-%m-%d'))
+        except ValueError:
+            pass 
+    if data_fim:
+        try:
+            reservas = reservas.filter(data_saida__lte=datetime.strptime(data_fim, '%Y-%m-%d'))
+        except ValueError:
+            pass  
+    if cliente:
+        reservas = reservas.filter(cliente__nome__icontains=cliente)
+    if status:
+        reservas = reservas.filter(ativa=(status.lower() == 'ativa'))
+    if quarto:
+        reservas = reservas.filter(quarto__icontains=quarto)
+
+    dados = {
+        'reservas': reservas,
+        'data_inicio': data_inicio,
+        'data_fim': data_fim,
+        'cliente': cliente,
+        'status': status,
+        'quarto': quarto,
+    }
+
+    return render(request, 'reservas/relatorio_reservas.html', dados)
