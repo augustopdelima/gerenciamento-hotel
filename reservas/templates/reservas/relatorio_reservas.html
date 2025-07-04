@@ -1,66 +1,79 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Relatório de Reservas</h1>
+<h1>Relatório de Reservas</h1>
 
-    <form method="get" action="" class="mb-4">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <label for="data_inicio" class="form-label">Data de Início:</label>
-                <input type="date" name="data_inicio" id="data_inicio" value="{{ data_inicio }}" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label for="data_fim" class="form-label">Data de Fim:</label>
-                <input type="date" name="data_fim" id="data_fim" value="{{ data_fim }}" class="form-control">
-            </div>
-            <div class="col-md-3">
-                <label for="cliente" class="form-label">Cliente:</label>
-                <input type="text" name="cliente" id="cliente" value="{{ cliente }}" class="form-control" placeholder="Nome do cliente">
-            </div>
-            <div class="col-md-3">
-                <label for="status" class="form-label">Status:</label>
-                <select name="status" id="status" class="form-select">
-                    <option value="">Todos</option>
-                    <option value="ativa" {% if status == 'ativa' %}selected{% endif %}>Ativa</option>
-                    <option value="inativa" {% if status == 'inativa' %}selected{% endif %}>Inativa</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label for="quarto" class="form-label">Tipo de Quarto:</label>
-                <input type="text" name="quarto" id="quarto" value="{{ quarto }}" class="form-control" placeholder="Tipo de quarto">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary mt-4">Filtrar</button>
-            </div>
+<form method="get" action="" class="mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label for="{{ form.data_inicio.id_for_label }}" class="form-label">{{ form.data_inicio.label }}</label>
+            {{ form.data_inicio }}
         </div>
-    </form>
 
+        <div class="col-md-3">
+            <label for="{{ form.data_fim.id_for_label }}" class="form-label">{{ form.data_fim.label }}</label>
+            {{ form.data_fim }}
+        </div>
+
+        <div class="col-md-3">
+            <label for="{{ form.cliente.id_for_label }}" class="form-label">{{ form.cliente.label }}</label>
+            {{ form.cliente }}
+        </div>
+
+        <div class="col-md-3">
+            <label for="{{ form.status.id_for_label }}" class="form-label">{{ form.status.label }}</label>
+            {{ form.status }}
+        </div>
+
+        <div class="col-md-3">
+            <label for="{{ form.ativo.id_for_label }}" class="form-label">{{ form.ativo.label }}</label>
+            {{ form.ativo }}
+        </div>
+
+        <div class="col-md-3">
+            <label for="{{ form.quarto.id_for_label }}" class="form-label">{{ form.quarto.label }}</label>
+            {{ form.quarto }}
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label d-block">&nbsp;</label>
+            <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<div class="table-responsive mt-4">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Cliente</th>
                 <th>Quarto</th>
+                <th>Tipo de Quarto</th>
                 <th>Data de Entrada</th>
                 <th>Data de Saída</th>
                 <th>Status</th>
+                <th>Ativa</th>
             </tr>
         </thead>
         <tbody>
             {% for reserva in reservas %}
-                <tr>
-                    <td>{{ reserva.id }}</td>
-                    <td>{{ reserva.cliente.nome }}</td>
-                    <td>{{ reserva.quarto }}</td>
-                    <td>{{ reserva.data_entrada }}</td>
-                    <td>{{ reserva.data_saida }}</td>
-                    <td>{{ reserva.ativa|yesno:"Ativa,Inativa" }}</td>
-                </tr>
+            <tr>
+                <td>{{ reserva.id }}</td>
+                <td>{{ reserva.cliente.nome }}</td>
+                <td>{{ reserva.quarto }}</td>
+                <td>{{ reserva.quarto.tipo.nome }}</td>
+                <td>{{ reserva.data_entrada }}</td>
+                <td>{{ reserva.data_saida }}</td>
+                <td>{{ reserva.nome_status }}</th>
+                <td>{{ reserva.ativa|yesno:"Ativa,Inativa" }}</td>
+            </tr>
             {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center">Nenhum registro de reserva encontrado.</td>
-                </tr>
+            <tr>
+                <td colspan="6" class="text-center">Nenhum registro de reserva encontrado.</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% endblock %}
