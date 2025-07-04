@@ -35,6 +35,16 @@ def marcar_ocorrencia_resolvida(request, ocorrencia_id):
         ocorrencia.save()
     return redirect('lista_ocorrencias')
 
+from django.contrib import messages
+
+@login_required
+def excluir_ocorrencia(request, ocorrencia_id):
+    ocorrencia = get_object_or_404(Ocorrencia, id=ocorrencia_id)
+    ocorrencia.delete()
+    messages.success(request, "Ocorrência excluída com sucesso.")
+    return redirect('lista_ocorrencias')
+
+
 def notificar_manutencao(ocorrencia):
     assunto = f"Nova ocorrência!"
     mensagem = (

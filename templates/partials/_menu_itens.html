@@ -29,9 +29,11 @@
         </a>
     </li>
     <li>
-        <a href="#" class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
+        {% if request.user.is_staff %}
+        <a href="{% url 'lista_tarifas' %}" class="nav-link text-white {% if '/lista_tarifas/' in request.path %}active bg-secondary{% endif %}">
             Tarifas
         </a>
+        {% endif %}
     </li>
 
      {% if user.is_authenticated %}

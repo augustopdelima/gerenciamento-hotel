@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h2>Tarifas Atuais</h2>
+<table class="table table-bordered">
+  <thead class="table-dark">
+    <tr>
+      <th>Tipo de Quarto</th>
+      <th>Temporada</th>
+      <th>Período</th>
+      <th>Valor</th>
+      <th>Ativa</th>
+      <th>Editar</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for tarifa in tarifas %}
+    <tr>
+      <td>{{ tarifa.tipo_quarto.nome }}</td>
+      <td>{{ tarifa.temporada|default:"-" }}</td>
+      <td>{{ tarifa.data_inicio }} a {{ tarifa.data_fim }}</td>
+      <td>R$ {{ tarifa.valor }}</td>
+      <td>{{ tarifa.ativa|yesno:"Sim,Não" }}</td>
+      <td>
+        <a href="{% url 'editar_tarifa' tarifa.id %}" class="btn btn-sm btn-warning">✏️ Editar</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'nova_tarifa' %}" class="btn btn-primary mt-3">+ Nova Tarifa</a>
+
+{% endblock %}

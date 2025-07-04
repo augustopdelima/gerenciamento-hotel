@@ -8,7 +8,7 @@ class Ocorrencia(models.Model):
     data_registro = models.DateField(auto_now_add=True)
     resolvido = models.BooleanField(default=False)
     data_resolvido = models.DateTimeField(null=True, blank=True)
-    criado_por = models.ForeignKey(User, on_delete=models.PROTECT)
+    criado_por = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return f'Ocorrencia#{self.id}:{self.quarto.numero},{self.descricao}'
