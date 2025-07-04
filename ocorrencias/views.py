@@ -5,22 +5,28 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def registrar_ocorrencia(request):
     if request.method == 'POST':
         form = OcorrenciaForm(request.POST)
         if form.is_valid():
-            ocorrencia = form.save()
+            ocorrencia = form.save(commit=False)
+            ocorrencia.criado_por = request.user
+            ocorrencia.save()
             notificar_manutencao(ocorrencia)
             return redirect('lista_ocorrencias')
     else:
         form = OcorrenciaForm()
     return render(request, 'ocorrencias/registrar.html', {'form': form})
 
+@login_required
 def lista_ocorrencias(request):
-    ocorrencias = Ocorrencia.objects.select_related('quarto').order_by('-data_registro')
+    ocorrencias = Ocorrencia.objects.select_related('quarto', 'criado_por').order_by('-data_registro')
     return render(request, 'ocorrencias/lista.html', {'ocorrencias': ocorrencias})
 
+@login_required
 def marcar_ocorrencia_resolvida(request, ocorrencia_id):
     ocorrencia = get_object_or_404(Ocorrencia, id=ocorrencia_id)
     if not ocorrencia.resolvido:

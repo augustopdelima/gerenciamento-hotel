@@ -1,8 +1,6 @@
 from django.db import models
-
 from quartos.models import Quarto
-from funcionarios.models import Funcionario
-
+from django.contrib.auth.models import User
 
 class Ocorrencia(models.Model):
     quarto = models.ForeignKey(Quarto, on_delete=models.RESTRICT)
@@ -10,6 +8,7 @@ class Ocorrencia(models.Model):
     data_registro = models.DateField(auto_now_add=True)
     resolvido = models.BooleanField(default=False)
     data_resolvido = models.DateTimeField(null=True, blank=True)
+    criado_por = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'Ocorrencia#{self.id}:{self.quarto.numero},{self.descricao}'

@@ -12,6 +12,8 @@
       <th>Descrição</th>
       <th>Data</th>
       <th>Resolvido</th>
+      <th>Criado por </th>
+      <th>Ação</th>
     </tr>
   </thead>
   <tbody>
@@ -22,6 +24,7 @@
       <td>{{ o.descricao|truncatechars:50 }}</td>
       <td>{{ o.data_registro }}</td>
       <td>{{ o.resolvido|yesno:"Sim,Não" }}</td>
+      <td>{{ o.criado_por.username }}</td>
       <td>
           {% if not o.resolvido %}
             <a href="{% url 'marcar_ocorrencia_resolvida' o.id %}" class="btn btn-sm btn-success">
