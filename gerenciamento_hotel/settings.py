@@ -135,3 +135,6 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 # URL de login
 LOGIN_URL = '/funcionarios/login/'
+
+# Configurações de email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

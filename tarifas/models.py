@@ -8,11 +8,9 @@ TEMPORADA_CHOICES = [
     ('Alta', 'Alta Temporada'),
 ]
 
-
 class Tarifa(models.Model):
     tipo_quarto = models.ForeignKey(TipoQuarto, on_delete=models.RESTRICT)
     valor = models.DecimalField(max_digits=8, decimal_places=2)
-
     temporada = models.CharField(
         max_length=10, choices=TEMPORADA_CHOICES, null=True, blank=True)
     ativa = models.BooleanField(default=True)
