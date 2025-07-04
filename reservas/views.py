@@ -1,17 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
 
-from .models import Reserva
-from .forms import ReservaForm
+from .models import Reserva, STATUS_RESERVA_CHOICES
+from .forms import ReservaForm, RelatorioReservas
 
+STATUS_MAP = dict(STATUS_RESERVA_CHOICES)
 ORDENACAO_RESERVA_LOOKUP = {
     "cliente": "cliente__nome",
     "data_entrada": "data_entrada",
     "status": "status",
     "data_saida": "data_saida",
 }
+
 
 @login_required
 def reservas(request):
@@ -32,6 +33,7 @@ def reservas(request):
 
     return render(request, 'reservas/index.html', dados)
 
+
 @login_required
 def cadastrar_reserva(request):
     if request.method == 'POST':
@@ -45,6 +47,7 @@ def cadastrar_reserva(request):
         form = ReservaForm()
 
     return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
+
 
 @login_required
 def editar_reserva(request, id):
@@ -66,6 +69,7 @@ def editar_reserva(request, id):
 
     return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
 
+
 @login_required
 def excluir_reserva(request, id):
     try:
@@ -77,6 +81,7 @@ def excluir_reserva(request, id):
         messages.error(request, "Reserva não encontrada.")
 
     return redirect('reservas:reservas')
+
 
 @login_required
 def ativar_reserva(request, id):
@@ -95,6 +100,7 @@ def ativar_reserva(request, id):
 
     return redirect('reservas:reservas_inativas')
 
+
 @login_required
 def listar_inativas(request):
     query = request.GET.get('busca', '')
@@ -107,6 +113,7 @@ def listar_inativas(request):
         reservas = Reserva.objects.filter(ativa=False)
 
     return render(request, 'reservas/index.html', {'reservas': reservas, 'ativos': False, 'query': query})
+
 
 @login_required
 def ordenar_reservas_view(request, campo):
@@ -128,49 +135,41 @@ def ordenar_reservas_view(request, campo):
     }
     return render(request, 'reservas/index.html', dados)
 
+
 @login_required
 def gerar_relatorio_reservas(request):
-    data_inicio = request.GET.get('data_inicio', '')
-    data_fim    = request.GET.get('data_fim', '')
-    cliente     = request.GET.get('cliente', '')
-    status      = request.GET.get('status', '')
-    quarto      = request.GET.get('quarto', '')
 
-    reservas = Reserva.objects.all()
+    form = RelatorioReservas(request.GET or None)
+    reservas = Reserva.objects.select_related(
+        'cliente', 'quarto', 'funcionario').all()
 
-    if data_inicio:
-        try:
-            dt_ini = datetime.strptime(data_inicio, '%Y-%m-%d')
-        except ValueError:
-            d, m, y = data_inicio.split('/')
-            dt_ini = datetime(int(y), int(m), int(d))
-        reservas = reservas.filter(data_entrada__gte=dt_ini)
+    if form.is_valid():
+        data_inicio = form.cleaned_data.get('data_inicio')
+        data_fim = form.cleaned_data.get('data_fim')
+        cliente = form.cleaned_data.get('cliente')
+        status = form.cleaned_data.get('status')
+        ativo = form.cleaned_data.get('ativo')
+        quarto = form.cleaned_data.get('quarto')
 
-    if data_fim:
-        try:
-            dt_fim = datetime.strptime(data_fim, '%Y-%m-%d')
-        except ValueError:
-            d, m, y = data_fim.split('/')
-            dt_fim = datetime(int(y), int(m), int(d))
-        reservas = reservas.filter(data_saida__lte=dt_fim)
+        if data_inicio:
+            reservas = reservas.filter(data_entrada__gte=data_inicio)
+        if data_fim:
+            reservas = reservas.filter(data_saida__lte=data_fim)
+        if cliente:
+            reservas = reservas.filter(cliente__nome__icontains=cliente)
+        if status:
+            reservas = reservas.filter(status=status)
+        if ativo:
+            reservas = reservas.filter(ativa=(ativo == 'ativo'))
+        if quarto:
+            reservas = reservas.filter(quarto__tipo__nome__icontains=quarto)
 
-    if cliente:
-        reservas = reservas.filter(cliente__nome__icontains=cliente)
-
-    if status and status.lower() != '':
-        ativa_flag = status.lower() == 'ativa'
-        reservas = reservas.filter(ativa=ativa_flag)
-
-    if quarto:
-        reservas = reservas.filter(quarto__tipo__nome__icontains=quarto)
-
+    for reserva in reservas:
+        reserva.nome_status = STATUS_MAP.get(
+            reserva.status, 'Desconhecido')
 
     context = {
+        'form': form,
         'reservas': reservas,
-        'data_inicio': data_inicio,
-        'data_fim': data_fim,
-        'cliente': cliente,
-        'status': status,
-        'quarto': quarto,
     }
     return render(request, 'reservas/relatorio_reservas.html', context)
