@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Ocorrências Registradas</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Quarto</th>
+      <th>Descrição</th>
+      <th>Data</th>
+      <th>Resolvido</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in ocorrencias %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.quarto.numero }}</td>
+      <td>{{ o.descricao|truncatechars:50 }}</td>
+      <td>{{ o.data_registro }}</td>
+      <td>{{ o.resolvido|yesno:"Sim,Não" }}</td>
+      <td>
+          {% if not o.resolvido %}
+            <a href="{% url 'marcar_ocorrencia_resolvida' o.id %}" class="btn btn-sm btn-success">
+              ✅ Marcar como resolvida
+            </a>
+          {% else %}
+            <span>✔️ Resolvida</span>
+          {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'registrar_ocorrencia' %}" class="btn btn-primary" style="margin-bottom: 15px;">+ Nova Ocorrência</a>
+
+{% endblock %}
