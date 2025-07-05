@@ -6,4 +6,6 @@
   <span class="badge bg-danger">Ocupado</span>
 {% elif quarto.status == "manutencao" %}
   <span class="badge bg-warning text-dark">Em Manutenção</span>
+{% elif quarto.status == "indisponivel" %}
+  <span class="badge bg-warning text-dark">Indisponível</span>
 {% endif %}

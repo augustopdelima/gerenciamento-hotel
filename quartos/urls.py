@@ -14,6 +14,9 @@ urlpatterns = [
          name='ordenar_quarto'),
     path('detalhes_quarto/<int:id>/',
          views.detalhes_quarto, name='detalhes_quarto'),
+    path('bloquear/<int:id>/', views.bloquear_quarto, name='bloquear_quarto'),
+    path('desbloquear/<int:id>/', views.desbloquear_quarto,
+         name='desbloquear_quarto'),
     # Tipos
     path('tipos_quarto/', views.tipos, name='tipos_quarto'),
     path('cadastrar_tipo/', views.cadastrar_tipo, name='cadastrar_tipo'),

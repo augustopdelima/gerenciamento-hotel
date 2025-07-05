@@ -8,6 +8,7 @@ QUARTO_STATUS_CHOICES = [
     ("ocupado", "Ocupado"),
     ("manutencao", "Em Manutenção"),
     ("reservado", "Reservado"),
+    ("indisponivel", "Indisponível")
 ]
 
 
@@ -72,7 +73,7 @@ class Quarto(models.Model):
         if original_status == self.status:
             return
 
-        # 3Verifica se há reservas ativas
+        # Verifica se há reservas ativas
         Reserva = apps.get_model("reservas", "Reserva")
         reservas_ativas = Reserva.objects.filter(
             quarto=self,
