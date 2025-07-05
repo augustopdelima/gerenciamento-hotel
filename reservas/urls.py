@@ -16,4 +16,7 @@ urlpatterns = [
     # Check-in
     path("reliazar_checkin/<int:id>",
          views.realizar_checkin, name="realizar_checkin"),
+    # Check-out
+    path("realizar_checkout/<int:id>",
+         views.realizar_checkout, name="realizar_checkout")
 ]

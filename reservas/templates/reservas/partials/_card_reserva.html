@@ -27,6 +27,13 @@
                     Check-in
                 </a>
             {% endif %}
+
+
+            {% if reserva.status == "em_andamento" %}
+                 <a href="{% url 'reservas:realizar_checkout' reserva.id %}" class="btn btn-sm btn-danger">
+                    Check-out
+                </a>
+            {% endif %}
         </div>
         <div class="card-footer bg-transparent border-0" >
             <a href="{% url 'reservas:editar_reserva' reserva.id %}" class="btn btn-outline-warning btn-sm">Editar
