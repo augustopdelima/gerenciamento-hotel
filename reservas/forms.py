@@ -23,8 +23,13 @@ class ReservaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # mostra apenas os quartos disponíveis
-        self.fields['quarto'].queryset = Quarto.objects.filter(
-            status__in=['disponivel', 'ocupado', 'reservado'])
+        qs = Quarto.objects.filter(status="disponivel")
+
+        # se estiver editando, garante que o quarto já associado apareça
+        if self.instance.pk and self.instance.quarto:
+            qs = qs | Quarto.objects.filter(pk=self.instance.quarto.pk)
+
+        self.fields["quarto"].queryset = qs
 
 
 class RelatorioReservas(forms.Form):

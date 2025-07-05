@@ -139,6 +139,43 @@ def detalhes_quarto(request, id):
 
     return render(request, 'quartos/detalhes_quarto.html', dados)
 
+
+@login_required
+def bloquear_quarto(request, id):
+    try:
+        quarto = Quarto.objects.get(id=id)
+    except Quarto.DoesNotExist:
+        messages.error(request, "Quarto não encontrado.")
+
+    if quarto.status in ["ocupado", "reservado"]:
+        messages.error(
+            request, "Não é possível bloquear um quarto ocupado ou reservado.")
+    else:
+        quarto.status = "indisponivel"
+        quarto.save(update_fields=["status"])
+        messages.success(request, "Quarto marcado como indisponível.")
+
+    return redirect("quartos")
+
+
+@login_required
+def desbloquear_quarto(request, id):
+    try:
+        quarto = Quarto.objects.get(id=id)
+    except Quarto.DoesNotExist:
+        messages.error(request, "Quarto não encontrado.")
+
+    if quarto.status == "indisponivel":
+        quarto.status = "disponivel"
+        quarto.save(update_fields=["status"])
+        messages.success(
+            request, "Quarto desbloqueado e marcado como disponível.")
+    else:
+        messages.info(request, "O quarto já está disponível ou ocupado.")
+
+    return redirect("quartos")
+
+
 # Tipo
 
 

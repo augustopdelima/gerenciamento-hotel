@@ -61,6 +61,11 @@
           <td>
             <a href="{% url 'editar_quarto' quarto.id  %}" class="btn btn-sm btn-warning">Editar</a>
             <a href="{% url 'excluir_quarto' quarto.id  %}" class="btn btn-sm btn-danger">Excluir</a>
+            {% if quarto.status != 'indisponivel' %}
+              <a href="{% url 'bloquear_quarto' quarto.id %}" class="btn btn-warning btn-sm">Bloquear</a>
+            {% elif quarto.status == 'indisponivel' %}
+              <a href="{% url 'desbloquear_quarto' quarto.id %}" class="btn btn-success btn-sm">Desbloquear</a>
+            {% endif %}
           </td>
 
         </tr>

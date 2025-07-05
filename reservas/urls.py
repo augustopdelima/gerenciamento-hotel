@@ -13,6 +13,10 @@ urlpatterns = [
     path('ativar_reserva/<int:id>', views.ativar_reserva, name="ativar_reserva"),
     path('reservas_inativas/', views.listar_inativas, name="reservas_inativas"),
     path('relatorio/', views.gerar_relatorio_reservas, name='relatorio_reservas'),
-
-
+    # Check-in
+    path("reliazar_checkin/<int:id>",
+         views.realizar_checkin, name="realizar_checkin"),
+    # Check-out
+    path("realizar_checkout/<int:id>",
+         views.realizar_checkout, name="realizar_checkout")
 ]

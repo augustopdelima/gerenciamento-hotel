@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
-from .models import Reserva, STATUS_RESERVA_CHOICES
+from .models import Reserva, CheckInCheckOut, STATUS_RESERVA_CHOICES
 from .forms import ReservaForm, RelatorioReservas
 
 STATUS_MAP = dict(STATUS_RESERVA_CHOICES)
@@ -182,3 +183,73 @@ def gerar_relatorio_reservas(request):
         'reservas': reservas,
     }
     return render(request, 'reservas/relatorio_reservas.html', context)
+
+
+# CheckIn
+
+@login_required
+def realizar_checkin(request, id):
+    try:
+        reserva = Reserva.objects.get(id=id)
+    except Reserva.DoesNotExist:
+        messages.error(request, "Reserva não encontrada.")
+        return redirect("reservas:reservas")
+
+    if reserva.status != "criada":
+        messages.error(
+            request, "Esta reserva não está disponível para check-in.")
+        return redirect("reservas:reservas")
+
+    if request.method == "POST":
+
+        CheckInCheckOut.objects.create(
+            reserva=reserva,
+            funcionario_checkin=request.user,
+            data_checkin=timezone.now()
+        )
+
+        # Atualiza status da reserva (sinal cuidará do quarto)
+        reserva.status = "em_andamento"
+        reserva.save()
+
+        messages.success(request, "Check-in realizado com sucesso.")
+        return redirect("reservas:reservas")
+
+    return render(request, "reservas/realizar_checkin.html", {
+        "reserva": reserva
+    })
+
+
+@login_required
+def realizar_checkout(request, id):
+    try:
+        reserva = Reserva.objects.get(id=id)
+    except Reserva.DoesNotExist:
+        messages.error(request, "Reserva não encontrada.")
+        return redirect("reservas:reservas")
+
+    if reserva.status != "em_andamento":
+        messages.error(request, "A reserva não está em andamento.")
+        return redirect("reservas:reservas")
+
+    try:
+        checkin_checkout = CheckInCheckOut.objects.get(reserva=reserva)
+    except CheckInCheckOut.DoesNotExist:
+        messages.ERROR(request, "Não existe check in para está reserva")
+        return redirect("reservas:reservas")
+
+    if request.method == "POST":
+        checkin_checkout.funcionario_checkout = request.user
+        checkin_checkout.data_checkout = timezone.now()
+        checkin_checkout.save()
+
+        reserva.status = "finalizada"
+        reserva.save()
+
+        messages.success(request, "Check-out realizado com sucesso.")
+        return redirect("reservas:reservas")
+
+    return render(request, "reservas/realizar_checkout.html", {
+        "reserva": reserva,
+        "checkin": checkin_checkout
+    })
