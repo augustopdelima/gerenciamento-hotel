@@ -43,7 +43,7 @@ def quartos(request):
 def cadastrar_quarto(request):
 
     if request.method == 'POST':
-        form = QuartoForm(request.POST)
+        form = QuartoForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('quartos')
@@ -66,7 +66,7 @@ def editar_quarto(request, id):
         return redirect('quartos')
 
     if request.method == 'POST':
-        form = QuartoForm(request.POST, instance=quarto)
+        form = QuartoForm(request.POST, request.FILES, instance=quarto)
         if form.is_valid():
             form.save()
             return redirect('quartos')
@@ -116,6 +116,21 @@ def ordenar_quartos_view(request, campo):
     }
 
     return render(request, 'quartos/index.html', dados)
+
+
+@login_required
+def detalhes_quarto(request, id):
+    try:
+        quarto = Quarto.objects.get(id=id)
+    except Quarto.DoesNotExist:
+        messages.error(request, "Quarto não encontrado.")
+        return redirect('quartos')
+
+    dados = {
+        "quarto": quarto,
+    }
+
+    return render(request, 'quartos/detalhes_quarto.html', dados)
 
 # Tipo
 

@@ -12,4 +12,4 @@ class TipoQuartoForm(forms.ModelForm):
 class QuartoForm(forms.ModelForm):
     class Meta:
         model = Quarto
-        fields = ['numero', 'andar', 'descricao', 'status', 'tipo']
+        fields = ['numero', 'foto', 'andar', 'descricao', 'status', 'tipo']

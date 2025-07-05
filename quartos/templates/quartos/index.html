@@ -48,7 +48,7 @@
       <tbody>
         {% for quarto in quartos %}
         <tr>
-          <td>{{ quarto.numero }}</td>
+          <td><a href="{% url 'detalhes_quarto' quarto.id %}">{{ quarto.numero }}</a></td>
           <td>{{ quarto.andar }}</td>
           <td>{{ quarto.descricao }}</td>
 

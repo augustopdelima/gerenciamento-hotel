@@ -1,6 +1,7 @@
 from django.db import models
 from django.apps import apps
 from django.core.exceptions import ValidationError
+from stdimage.models import StdImageField
 
 QUARTO_STATUS_CHOICES = [
     ("disponivel", "Disponível"),
@@ -42,6 +43,14 @@ class Quarto(models.Model):
         TipoQuarto,
         on_delete=models.RESTRICT,
         verbose_name="Tipo de Quarto"
+    )
+
+    foto = StdImageField(
+        upload_to='fotos/quartos',
+        variations={'thumb': (150, 150), 'medium': (
+            300, 300), 'large': (600, 400)},
+        blank=True,
+        null=True
     )
 
     def __str__(self):

@@ -1,4 +1,3 @@
-{% load group_filters %}
 <ul class="nav nav-pills flex-column mb-auto">
     <li>
         <a href="{% url 'reservas:reservas' %}"
@@ -6,7 +5,8 @@
             Reservas
         </a>
     </li>
-    {% if not user|has_group:"Atendente" %}
+
+    {% if user.is_staff %}
     <li>
         <a href="{% url 'quartos' %}"
            class="nav-link text-white {% if '/quartos/' in request.path %}active bg-secondary{% endif %}">
@@ -20,7 +20,7 @@
             Clientes
         </a>
     </li>
-    {% if not user|has_group:"Atendente" %}
+    {% if user.is_staff %}
     <li>
         <a href="{% url 'funcionarios' %}"
            class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
@@ -33,7 +33,7 @@
             Ocorrências
         </a>
     </li>
-    {% if not user|has_group:"Atendente" %}
+    {% if user.is_staff %}
     <li>
         <a href="#" class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
             Tarifas
