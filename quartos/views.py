@@ -87,8 +87,15 @@ def editar_quarto(request, id):
 def excluir_quarto(request, id):
     try:
         quarto = Quarto.objects.get(id=id)
+
+        if quarto.status in ["ocupado", "reservado"]:
+            messages.error(
+                request, "Não é possível excluir um quarto ocupado ou reservado.")
+            return redirect("quartos")
+
         quarto.delete()
         messages.success(request, "Quarto excluído com sucesso.")
+
     except RestrictedError:
         messages.error(
             request, "Não é possível deletar o quarto pois há reservas vinculados.")
