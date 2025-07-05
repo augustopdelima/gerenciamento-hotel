@@ -47,7 +47,8 @@ class Quarto(models.Model):
 
     foto = StdImageField(
         upload_to='fotos/quartos',
-        variations={'thumb': (150, 150), 'medium': (300, 300)},
+        variations={'thumb': (150, 150), 'medium': (
+            300, 300), 'large': (600, 400)},
         blank=True,
         null=True
     )
