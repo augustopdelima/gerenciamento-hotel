@@ -1,11 +1,12 @@
 from django.db import models
-
+from django.apps import apps
+from django.core.exceptions import ValidationError
 
 QUARTO_STATUS_CHOICES = [
     ("disponivel", "Disponível"),
     ("ocupado", "Ocupado"),
     ("manutencao", "Em Manutenção"),
-    ("indisponivel", "Indisponível"),
+    ("reservado", "Reservado"),
 ]
 
 
@@ -45,3 +46,37 @@ class Quarto(models.Model):
 
     def __str__(self):
         return f"Quarto {self.numero}"
+
+    def clean(self):
+
+        super().clean()
+
+        if not self.pk:
+            return
+
+        # Busca o valor que está salvo no banco
+        original_status = (
+            Quarto.objects.only("status").get(pk=self.pk).status
+        )
+
+        # Se o status não mudou
+        if original_status == self.status:
+            return
+
+        # 3Verifica se há reservas ativas
+        Reserva = apps.get_model("reservas", "Reserva")
+        reservas_ativas = Reserva.objects.filter(
+            quarto=self,
+            status__in=["criada", "em_andamento"],
+        ).exists()
+
+        if reservas_ativas:
+            raise ValidationError(
+                {
+                    "status":
+                        "O status deste quarto é controlado automaticamente "
+                        "enquanto houver reservas ativas. "
+                        "Para alterar, primeiro finalize ou cancele as reservas ligadas a ele."
+
+                }
+            )

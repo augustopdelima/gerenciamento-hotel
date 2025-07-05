@@ -20,10 +20,12 @@ def reservas(request):
 
     if query:
         reservas = Reserva.objects.filter(
-            cliente__nome__icontains=query, ativa=True
+            cliente__nome__icontains=query, status__in=[
+                "criada", "em_andamento", "finalizada"]
         )
     else:
-        reservas = Reserva.objects.filter(ativa=True)
+        reservas = Reserva.objects.filter(
+            status__in=["criada", "em_andamento", "finalizada"])
 
     dados = {
         'reservas': reservas,
@@ -42,7 +44,7 @@ def cadastrar_reserva(request):
             form.save()
             return redirect('reservas:reservas')
         else:
-            print(form.errors)
+            messages.error(request, form.errors.as_text())
     else:
         form = ReservaForm()
 
@@ -60,10 +62,12 @@ def editar_reserva(request, id):
         form = ReservaForm(request.POST, instance=reserva)
         if form.is_valid():
             reserva_editada = form.save()
-            if reserva_editada.ativa:
+            if reserva_editada.status in ["criada", "em_andamento"]:
                 return redirect('reservas:reservas')
             else:
                 return redirect('reservas:reservas_inativas')
+        else:
+            messages.error(request, form.errors.as_text())
     else:
         form = ReservaForm(instance=reserva)
 
@@ -74,9 +78,10 @@ def editar_reserva(request, id):
 def excluir_reserva(request, id):
     try:
         reserva = Reserva.objects.get(id=id)
-        reserva.ativa = False
+        reserva.status = 'cancelada'
         reserva.save()
         messages.success(request, "Reserva excluída com sucesso.")
+
     except Reserva.DoesNotExist:
         messages.error(request, "Reserva não encontrada.")
 
@@ -91,8 +96,8 @@ def ativar_reserva(request, id):
         messages.error(request, "Reserva não encontrada.")
         return redirect('reservas:reservas_inativas')
 
-    if not reserva.ativa:
-        reserva.ativa = True
+    if reserva.status == 'cancelada':
+        reserva.status = 'criada'
         reserva.save()
         messages.success(request, "Reserva reativada com sucesso.")
     else:
@@ -103,29 +108,34 @@ def ativar_reserva(request, id):
 
 @login_required
 def listar_inativas(request):
+
     query = request.GET.get('busca', '')
 
+    filtro = Reserva.objects.filter(status='cancelada')
     if query:
-        reservas = Reserva.objects.filter(
-            ativa=False, cliente__nome__icontains=query
-        )
-    else:
-        reservas = Reserva.objects.filter(ativa=False)
+        filtro = filtro.filter(cliente__nome__icontains=query)
 
-    return render(request, 'reservas/index.html', {'reservas': reservas, 'ativos': False, 'query': query})
+    return render(request, 'reservas/index.html', {'reservas': filtro, 'ativos': False, 'query': query})
 
 
 @login_required
 def ordenar_reservas_view(request, campo):
+
     busca = request.GET.get('busca', '')
     ativo_param = request.GET.get('ativo', 'true').lower()
     ativo = ativo_param == 'true'
-    campo_ordenacao = ORDENACAO_RESERVA_LOOKUP.get(campo, 'id')
 
-    reservas = Reserva.objects.filter(ativa=ativo)
+    if ativo:
+        reservas = Reserva.objects.filter(
+            status__in=['criada', 'em_andamento'])
+    else:
+        reservas = Reserva.objects.filter(
+            status__in=['cancelada', 'finalizada'])
+
     if busca:
         reservas = reservas.filter(cliente__nome__icontains=busca)
 
+    campo_ordenacao = ORDENACAO_RESERVA_LOOKUP.get(campo, 'id')
     reservas = reservas.order_by(campo_ordenacao)
 
     dados = {
@@ -148,7 +158,6 @@ def gerar_relatorio_reservas(request):
         data_fim = form.cleaned_data.get('data_fim')
         cliente = form.cleaned_data.get('cliente')
         status = form.cleaned_data.get('status')
-        ativo = form.cleaned_data.get('ativo')
         quarto = form.cleaned_data.get('quarto')
 
         if data_inicio:
@@ -159,10 +168,10 @@ def gerar_relatorio_reservas(request):
             reservas = reservas.filter(cliente__nome__icontains=cliente)
         if status:
             reservas = reservas.filter(status=status)
-        if ativo:
-            reservas = reservas.filter(ativa=(ativo == 'ativo'))
         if quarto:
             reservas = reservas.filter(quarto__tipo__nome__icontains=quarto)
+    else:
+        messages.error(request, form.errors.as_text())
 
     for reserva in reservas:
         reserva.nome_status = STATUS_MAP.get(

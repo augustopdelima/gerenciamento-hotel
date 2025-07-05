@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Relatório de Reservas</h1>
+
+
+<div class="d-flex flex-wrap align-items-center gap-2 justify-content-between">
+    <h1>Relatório de Reservas</h1>
+    <a href="{% url 'reservas:reservas' %}" class="btn btn-success">Voltar para reservas</a>
+</div>
 
 <form method="get" action="" class="mb-4">
     <div class="row g-3">
@@ -26,11 +31,6 @@
         </div>
 
         <div class="col-md-3">
-            <label for="{{ form.ativo.id_for_label }}" class="form-label">{{ form.ativo.label }}</label>
-            {{ form.ativo }}
-        </div>
-
-        <div class="col-md-3">
             <label for="{{ form.quarto.id_for_label }}" class="form-label">{{ form.quarto.label }}</label>
             {{ form.quarto }}
         </div>
@@ -52,8 +52,10 @@
                 <th>Tipo de Quarto</th>
                 <th>Data de Entrada</th>
                 <th>Data de Saída</th>
+                <th>Criada Em</th>
+                <th>Criada Por</th>
                 <th>Status</th>
-                <th>Ativa</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -65,8 +67,9 @@
                 <td>{{ reserva.quarto.tipo.nome }}</td>
                 <td>{{ reserva.data_entrada }}</td>
                 <td>{{ reserva.data_saida }}</td>
+                <td>{{ reserva.criada_em }}</td>
+                <td>{{ reserva.funcionario.first_name }}</td>
                 <td>{{ reserva.nome_status }}</th>
-                <td>{{ reserva.ativa|yesno:"Ativa,Inativa" }}</td>
             </tr>
             {% empty %}
             <tr>

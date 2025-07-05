@@ -1,6 +1,7 @@
 from django import forms
 from .models import Reserva, STATUS_RESERVA_CHOICES
 from quartos.models import TipoQuarto
+from quartos.models import Quarto
 
 
 class ReservaForm(forms.ModelForm):
@@ -18,6 +19,12 @@ class ReservaForm(forms.ModelForm):
         model = Reserva
         fields = ['data_entrada', 'data_saida', 'cliente',
                   'funcionario', 'quarto', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # mostra apenas os quartos disponíveis
+        self.fields['quarto'].queryset = Quarto.objects.filter(
+            status__in=['disponivel', 'ocupado'])
 
 
 class RelatorioReservas(forms.Form):
@@ -55,14 +62,6 @@ class RelatorioReservas(forms.Form):
         label="Status",
         choices=[('', 'Todos')] + STATUS_RESERVA_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
-    ativo = forms.ChoiceField(
-        required=False,
-        label="Ativo",
-        choices=[('', 'Todos'), ('ativa', 'Ativo'), ('inativa', 'Inativo')],
-        widget=forms.Select(attrs={'class': 'form-select'})
-
     )
 
     quarto = forms.ModelChoiceField(

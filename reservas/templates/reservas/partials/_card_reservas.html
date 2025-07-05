@@ -32,10 +32,10 @@
                 Detalhes
               </a>
 
-              {% if reserva.ativa %}
-                <a href="{% url 'reservas:excluir_reserva' reserva.id %}" class="btn btn-outline-danger btn-sm">Excluir Reserva</a>
+              {% if reserva.status == 'cancelada' %}
+                <a href="{% url 'reservas:ativar_reserva' reserva.id %}" class="btn btn-outline-secondary btn-sm">Ativar Reserva</a> 
               {% else %}
-                <a href="{% url 'reservas:ativar_reserva' reserva.id %}" class="btn btn-outline-secondary btn-sm">Ativar Reserva</a>
+                <a href="{% url 'reservas:excluir_reserva' reserva.id %}" class="btn btn-outline-danger btn-sm">Excluir Reserva</a>
               {% endif %}
             </div>
           </div>
