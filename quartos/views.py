@@ -48,7 +48,7 @@ def cadastrar_quarto(request):
             form.save()
             return redirect('quartos')
         else:
-            print(form.errors)
+            messages.error(request, form.errors.as_text())
     else:
         form = QuartoForm()
         dados = {
@@ -70,6 +70,8 @@ def editar_quarto(request, id):
         if form.is_valid():
             form.save()
             return redirect('quartos')
+        else:
+            messages.error(request, form.errors.as_text())
 
     form = QuartoForm(instance=quarto)
 
@@ -144,7 +146,7 @@ def cadastrar_tipo(request):
             form.save()
             return redirect('tipos_quarto')
         else:
-            print(form.errors)
+            messages.error(request, form.errors.as_text())
     else:
         form = TipoQuartoForm()
         dados = {
@@ -166,6 +168,8 @@ def editar_tipo(request, id):
         if form.is_valid():
             form.save()
             return redirect('tipos_quarto')
+        else:
+            messages.error(request, form.errors.as_text())
 
     form = TipoQuartoForm(instance=tipo)
 

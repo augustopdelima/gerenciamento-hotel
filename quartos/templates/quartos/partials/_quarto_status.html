@@ -1,0 +1,9 @@
+{% if quarto.status == "disponivel" %}
+  <span class="badge bg-success">Disponível</span>
+{% elif quarto.status == "reservado" %}
+  <span class="badge bg-info text-dark">Reservado</span>
+{% elif quarto.status == "ocupado" %}
+  <span class="badge bg-danger">Ocupado</span>
+{% elif quarto.status == "manutencao" %}
+  <span class="badge bg-warning text-dark">Em Manutenção</span>
+{% endif %}
