@@ -1,28 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container my-3">
-    <div class="card mx-auto" style="width: 18rem;">
-        {% if quarto.foto %}
-            <img src="{{ quarto.foto.medium.url }}" class="card-img-top" alt="Foto de {{ quarto.numero }}">
-        {% else %}
-            <img src="" class="card-img-top" alt="Sem foto {{ quarto.numero }} ">
-        {% endif %}
-        <div class="card-body">
-            <h5 class="card-title">{{ quarto.numero }}</h5>
-            <p class="card-text"><strong>Anda:</strong> {{ quarto.andar }}</p>
-            <p class="card-text"><strong>Tipo:</strong> {{ quarto.tipo.nome }}</p>
-            <p class="card-text"><strong>Descrição:</strong> {{ quarto.descricao }}</p>
+<div class="container my-4">
+    <div class="card rounded shadow overflow-hidden">
+
+        <div style="position: relative; height: 300px; overflow: hidden;">
+            <img src="{{ quarto.foto.medium.url }}" alt="Foto do quarto {{ quarto.numero }}"
+                style="width: 100%; height: 100%; object-fit: cover">
+            <div style="position: absolute; inset: 0; background-color: rgba(0,0,0,0.5);"></div>
+            <h2 class="text-white position-absolute bottom-0 start-0 p-3"
+                style="text-shadow: 1px 1px 5px rgba(0,0,0,0.7);">
+                Quarto {{ quarto.numero }}
+            </h2>
+        </div>
+
+
+        <div class="p-4 bg-light">
+            <p class="mb-2 d-flex align-items-center gap-2">
+                <strong>Andar:</strong>
+                <span>{{ quarto.andar }}º andar</span>
+            </p>
+
+            <p class="mb-2">
+                <strong>Tipo:</strong> {{ quarto.tipo.nome }}<br>
+                <small class="text-muted">{{ quarto.tipo.descricao }}</small>
+            </p>
+
+            <p class="mb-3">
+                <strong>Descrição:</strong><br>
+                <span class="text-secondary fst-italic">{{ quarto.descricao|default:"(Sem descrição)" }}</span>
+            </p>
+
+            <p class="mb-3">
+                <strong>Status:</strong>
+                {% if quarto.status == "disponivel" %}
+                <span class="badge bg-success text-uppercase">{{ quarto.get_status_display }}</span>
+                {% elif quarto.status == "reservado" %}
+                <span class="badge bg-warning text-uppercase">{{ quarto.get_status_display }}</span>
+                {% elif quarto.status == "indisponivel" %}
+                <span class="badge bg-danger text-uppercase">{{ quarto.get_status_display }}</span>
+                {% else %}
+                <span class="badge bg-secondary text-uppercase">{{ quarto.get_status_display }}</span>
+                {% endif %}
+            </p>
+
+            <div class="text-end">
+                <a href="{% url 'quartos' %}" class="btn btn-primary">← Voltar para a lista de quartos</a>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="container my-3">
-    <div class="row">
-        <div class="col text-center">
-            <a href="{% url 'quartos' %}" class="btn btn-primary"> Lista de Quartos</a>
-        </div>
-    </div>
-</div>
-
-{% endblock %}
+    {% endblock %}
