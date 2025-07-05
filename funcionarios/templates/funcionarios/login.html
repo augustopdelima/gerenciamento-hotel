@@ -43,15 +43,15 @@
     <form method="post">
       {% csrf_token %}
 
-      <div class="mb-3 p-2 position-relative">
-        <span class="form-icon"><i class="bi bi-person-fill"></i></span>
+      <div class="mb-3 input-group">
+         <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
         <input type="text" name="username" class="form-control" placeholder="Usuário" required>
-      </div>
+    </div> 
 
-      <div class="mb-3 p-2 position-relative">
-        <span class="form-icon"><i class="bi bi-lock-fill"></i></span>
+     <div class="mb-3 input-group">
+        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
         <input type="password" name="password" class="form-control" placeholder="Senha" required>
-      </div>
+     </div> 
 
       <div class="d-grid">
         <button type="submit" class="btn btn-primary">Entrar</button>

@@ -12,6 +12,8 @@ urlpatterns = [
          views.excluir_quarto, name='excluir_quarto'),
     path('ordenar/<campo>/', views.ordenar_quartos_view,
          name='ordenar_quarto'),
+    path('detalhes_quarto/<int:id>/',
+         views.detalhes_quarto, name='detalhes_quarto'),
     # Tipos
     path('tipos_quarto/', views.tipos, name='tipos_quarto'),
     path('cadastrar_tipo/', views.cadastrar_tipo, name='cadastrar_tipo'),

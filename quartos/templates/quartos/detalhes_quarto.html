@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-3">
+    <div class="card mx-auto" style="width: 18rem;">
+        {% if quarto.foto %}
+            <img src="{{ quarto.foto.medium.url }}" class="card-img-top" alt="Foto de {{ quarto.numero }}">
+        {% else %}
+            <img src="" class="card-img-top" alt="Sem foto {{ quarto.numero }} ">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ quarto.numero }}</h5>
+            <p class="card-text"><strong>Anda:</strong> {{ quarto.andar }}</p>
+            <p class="card-text"><strong>Tipo:</strong> {{ quarto.tipo.nome }}</p>
+            <p class="card-text"><strong>Descrição:</strong> {{ quarto.descricao }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-3">
+    <div class="row">
+        <div class="col text-center">
+            <a href="{% url 'quartos' %}" class="btn btn-primary"> Lista de Quartos</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
