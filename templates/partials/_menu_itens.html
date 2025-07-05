@@ -1,3 +1,4 @@
+{% load group_filters %}
 <ul class="nav nav-pills flex-column mb-auto">
     <li>
         <a href="{% url 'reservas:reservas' %}"
@@ -5,34 +6,40 @@
             Reservas
         </a>
     </li>
+    {% if not user|has_group:"Atendente" %}
     <li>
         <a href="{% url 'quartos' %}"
            class="nav-link text-white {% if '/quartos/' in request.path %}active bg-secondary{% endif %}">
             Quartos
         </a>
     </li>
+    {% endif %}
     <li>
         <a href="{% url 'clientes' %}"
            class="nav-link text-white {% if '/clientes/' in request.path %}active bg-secondary{% endif %}">
             Clientes
         </a>
     </li>
+    {% if not user|has_group:"Atendente" %}
     <li>
         <a href="{% url 'funcionarios' %}"
            class="nav-link text-white {% if '/funcionarios/' in request.path %}active bg-secondary{% endif %}">
             Funcionários
         </a>
     </li>
+    {% endif %}
     <li>
         <a href="#" class="nav-link text-white {% if request.resolver_match.url_name == 'ocorrencias' %}active bg-secondary{% endif %}">
             Ocorrências
         </a>
     </li>
+    {% if not user|has_group:"Atendente" %}
     <li>
         <a href="#" class="nav-link text-white {% if request.resolver_match.url_name == 'tarifas' %}active bg-secondary{% endif %}">
             Tarifas
         </a>
     </li>
+    {% endif %}
 
      {% if user.is_authenticated %}
         <li class="mt-3">
