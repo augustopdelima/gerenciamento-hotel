@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Confirmar Check-in</h2>
+    <p><strong>Cliente:</strong> {{ reserva.cliente.nome }}</p>
+    <p><strong>Quarto:</strong> {{ reserva.quarto.numero }} - {{ reserva.quarto.tipo.nome }}</p>
+    <p><strong>Data Entrada:</strong> {{ reserva.data_entrada }}</p>
+    <p><strong>Data Saída:</strong> {{ reserva.data_saida }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Confirmar Check-in</button>
+        <a href="{% url 'reservas:reservas' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,13 @@
+<div class="container mt-4">
+  {% if reservas %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for reserva in reservas %}
+        {% include 'reservas/partials/_card_reserva.html' %} 
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center">
+      Nenhuma reserva encontrada.
+    </div>
+  {% endif %}
+</div>

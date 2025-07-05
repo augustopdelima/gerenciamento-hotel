@@ -1,0 +1,47 @@
+<div class="col">
+    <div class="card h-100 border-primary shadow-sm">
+        <div class="card-body">
+            <h5 class="card-title">Reserva #{{ reserva.pk }}</h5>
+
+            <p class="mb-1"><strong>Cliente:</strong> {{ reserva.cliente.nome }}</p>
+            <p class="mb-1"><strong>Quarto:</strong> {{ reserva.quarto.numero }} ({{ reserva.quarto.tipo.nome }})</p>
+            <p class="mb-1"><strong>Entrada:</strong> {{ reserva.data_entrada|date:"d/m/Y" }}</p>
+            <p class="mb-1"><strong>Saída:</strong> {{ reserva.data_saida|date:"d/m/Y" }}</p>
+
+            <p>
+                <strong>Status:</strong>
+                <span class="badge 
+                  {% if reserva.status == 'criada' %}bg-secondary
+                  {% elif reserva.status == 'em_andamento' %}bg-warning text-dark
+                  {% elif reserva.status == 'finalizada' %}bg-success
+                  {% elif reserva.status == 'cancelada' %}bg-danger
+                  {% else %}bg-dark
+                  {% endif %}
+                ">
+                    {{ reserva.get_status_display }}
+                </span>
+            </p>
+
+            {% if reserva.status == "criada" %}
+                <a href="{% url 'reservas:realizar_checkin' reserva.id %}" class="btn btn-sm btn-success">
+                    Check-in
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-footer bg-transparent border-0" >
+            <a href="{% url 'reservas:editar_reserva' reserva.id %}" class="btn btn-outline-warning btn-sm">Editar
+                Reserva</a>
+            <a href="#" class="btn btn-outline-primary btn-sm">
+                Detalhes
+            </a> 
+
+            {% if reserva.status == 'cancelada' %}
+            <a href="{% url 'reservas:ativar_reserva' reserva.id %}" class="btn btn-outline-secondary btn-sm">Ativar
+                Reserva</a>
+            {% else %}
+            <a href="{% url 'reservas:excluir_reserva' reserva.id %}" class="btn btn-outline-danger btn-sm">Excluir
+                Reserva</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
