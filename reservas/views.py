@@ -201,7 +201,7 @@ def detalhes_reserva(request, reserva_id):
     reserva = get_object_or_404(Reserva.objects.select_related(
         "quarto__tipo", "cliente", "funcionario"), pk=reserva_id)
 
-    tarifa = (
+    tarifas = (
         Tarifa.objects
         .filter(
             tipo_quarto=reserva.quarto.tipo,
@@ -210,14 +210,13 @@ def detalhes_reserva(request, reserva_id):
             data_fim__gte=reserva.data_saida,
         )
         .order_by("-data_inicio")
-        .first()
     )
 
     checkin = getattr(reserva, "checkincheckout", None)
 
     context = {
         "reserva": reserva,
-        "tarifa": tarifa,
+        "tarifas": tarifas,
         "check": checkin,
     }
     return render(request, "reservas/detalhes.html", context)

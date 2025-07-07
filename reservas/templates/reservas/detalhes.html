@@ -53,17 +53,20 @@
   </div>
 
   <!-- Tarifa -->
-  {% if tarifa %}
-  <div class="card mb-3 shadow-sm">
-    <div class="card-header bg-success text-white">Tarifa</div>
-    <div class="card-body">
-      <p><strong>Valor diária:</strong> R$ {{ tarifa.valor }}</p>
-      {% if tarifa.temporada %}<p><strong>Temporada:</strong> {{ tarifa.get_temporada_display }}</p>{% endif %}
-      <p><small>Período de vigência da tarifa: {{ tarifa.data_inicio|date:"d/m/Y" }} – {{ tarifa.data_fim|date:"d/m/Y" }}</small></p>
+  {% if tarifas %}
+
+    {% for tarifa in tarifas %}
+     <div class="card mb-3 shadow-sm">
+      <div class="card-header bg-success text-white">Tarifa</div>
+        <div class="card-body">
+        <p><strong>Valor diária:</strong> R$ {{ tarifa.valor }}</p>
+        {% if tarifa.temporada %}<p><strong>Temporada:</strong> {{ tarifa.get_temporada_display }}</p>{% endif %}
+        <p><small>Período de vigência da tarifa: {{ tarifa.data_inicio|date:"d/m/Y" }} – {{ tarifa.data_fim|date:"d/m/Y" }}</small></p>
+      </div>
     </div>
-  </div>
+  {% endfor %}
   {% else %}
-    <div class="alert alert-warning">Não há tarifa cadastrada para este tipo de quarto no período da reserva.</div>
+    <div class="alert alert-warning">Não há tarifas cadastrada para este tipo de quarto no período da reserva.</div>
   {% endif %}
 
   <!-- Check‑in / Check‑out -->
