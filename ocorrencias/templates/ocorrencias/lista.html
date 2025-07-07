@@ -1,50 +1,13 @@
 {% extends 'base.html' %}
-
 {% load crispy_forms_tags %}
-
 {% block content %}
-<h2>Ocorrências Registradas</h2>
-<table class="table table-bordered">
-  <thead class="table-dark">
-    <tr>
-      <th>ID</th>
-      <th>Quarto</th>
-      <th>Descrição</th>
-      <th>Data</th>
-      <th>Resolvido</th>
-      <th>Criado por </th>
-      <th>Ação</th>
-      <th>Excluir</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for o in ocorrencias %}
-    <tr>
-      <td>{{ o.id }}</td>
-      <td>{{ o.quarto.numero }}</td>
-      <td>{{ o.descricao|truncatechars:50 }}</td>
-      <td>{{ o.data_registro }}</td>
-      <td>{{ o.resolvido|yesno:"Sim,Não" }}</td>
-      <td>{{ o.criado_por.username }}</td>
-      <td>
-          {% if not o.resolvido %}
-            <a href="{% url 'marcar_ocorrencia_resolvida' o.id %}" class="btn btn-sm btn-success">
-              ✅ Marcar como resolvida
-            </a>
-          {% else %}
-            <span>✔️ Resolvida</span>
-          {% endif %}
-      </td>
-      <td>
-          <a href="{% url 'excluir_ocorrencia' o.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta ocorrência?');">
-            🗑️ Excluir
-          </a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container mt-4">
+  <h2 class="mb-4">Ocorrências Registradas</h2>
 
-<a href="{% url 'registrar_ocorrencia' %}" class="btn btn-primary" style="margin-bottom: 15px;">+ Nova Ocorrência</a>
+  {% include "ocorrencias/partials/_tabela_ocorrencias.html" %}
 
+  <a href="{% url 'registrar_ocorrencia' %}" class="btn btn-primary mt-3">
+    <i class="bi bi-plus-lg"></i> Nova Ocorrência
+  </a>
+</div>
 {% endblock %}

@@ -90,3 +90,17 @@ class Quarto(models.Model):
 
                 }
             )
+
+       # Verifica se há ocorrências não resolvidas
+        Ocorrencia = apps.get_model("ocorrencias", "Ocorrencia")
+        ocorrencias_pendentes = Ocorrencia.objects.filter(
+            quarto=self,
+            resolvido=False,
+        ).exists()
+
+        if ocorrencias_pendentes:
+            raise ValidationError({
+                "status":
+                    "Não é possível alterar o status deste quarto enquanto houver "
+                    "ocorrências não resolvidas."
+            })
