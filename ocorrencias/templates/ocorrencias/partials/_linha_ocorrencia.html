@@ -14,24 +14,24 @@
   <td>
     {% if not ocorrencia.resolvido %}
       <a href="{% url 'marcar_ocorrencia_resolvida' ocorrencia.id %}" 
-         class="btn btn-sm btn-outline-success" 
+         class="btn btn-sm btn-success" 
          title="Marcar esta ocorrência como resolvida">
          ✅ Marcar como resolvida
       </a>
     {% else %}
-      <span class="text-success fw-semibold" title="Ocorrência resolvida">
-        ✔️ Resolvida
-      </span>
+      <a href="{% url 'desmarcar_ocorrencia' ocorrencia.id %}" class="btn btn-sm btn-warning" title="Ocorrência resolvida">
+        ✔️ Desmarcar como resolvida
+      </a>
     {% endif %}
    
     <a href="{% url 'excluir_ocorrencia' ocorrencia.id %}" 
-       class="btn btn-sm btn-outline-danger" 
+       class="btn btn-sm btn-danger" 
        onclick="return confirm('Tem certeza que deseja excluir esta ocorrência?');" 
        title="Excluir ocorrência">
       Excluir 
     </a>
 
-    <a href="{% url 'editar_ocorrencia' ocorrencia.id %}" class="btn btn-sm btn-outline-warning">
+    <a href="{% url 'editar_ocorrencia' ocorrencia.id %}" class="btn btn-sm btn-warning">
      Editar 
     </a>
   </td>

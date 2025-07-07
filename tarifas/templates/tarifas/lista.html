@@ -5,6 +5,20 @@
 {% block content %}
 
 <h2>Tarifas Atuais</h2>
+
+<form method="get" class="row g-3 mb-4">
+  {% for field in form %}
+    <div class="col">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+    </div>
+  {% endfor %} 
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+  </div>
+</form>
+
+<div class="table-responsive">
 <table class="table table-bordered">
   <thead class="table-dark">
     <tr>
@@ -25,12 +39,20 @@
       <td>R$ {{ tarifa.valor }}</td>
       <td>{{ tarifa.ativa|yesno:"Sim,Não" }}</td>
       <td>
+        {% if tarifa.ativa %}
+          <span class="badge bg-success">Ativa</span>
+          <a href="{% url 'desativar_tarifa' tarifa.id %}" class="btn btn-sm btn-danger ms-2">Desativar</a>
+        {% else %}
+          <span class="badge bg-secondary">Inativa</span>
+          <a href="{% url 'ativar_tarifa' tarifa.id %}" class="btn btn-sm btn-danger ms-2">Ativar</a>
+        {% endif %}
         <a href="{% url 'editar_tarifa' tarifa.id %}" class="btn btn-sm btn-warning">✏️ Editar</a>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+</div>
 <a href="{% url 'nova_tarifa' %}" class="btn btn-primary mt-3">+ Nova Tarifa</a>
 
 {% endblock %}

@@ -1,9 +1,8 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from .models import Ocorrencia
-from .forms import OcorrenciaForm
+from .forms import OcorrenciaForm, RelatorioOcorrencias
 from django.shortcuts import get_object_or_404
-from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -31,8 +30,35 @@ def registrar_ocorrencia(request):
 
 @login_required
 def lista_ocorrencias(request):
-    ocorrencias = Ocorrencia.objects.all().order_by('-data_registro')
-    return render(request, 'ocorrencias/lista.html', {'ocorrencias': ocorrencias})
+    form = RelatorioOcorrencias(request.GET or None)
+    ocorrencias = Ocorrencia.objects.select_related(
+        'quarto', 'criado_por').all()
+
+    if form.is_valid():
+        cd = form.cleaned_data
+
+        if cd['data_inicio']:
+            ocorrencias = ocorrencias.filter(
+                data_registro__gte=cd['data_inicio'])
+        if cd['data_fim']:
+            ocorrencias = ocorrencias.filter(data_registro__lte=cd['data_fim'])
+        if cd['quarto']:
+            ocorrencias = ocorrencias.filter(quarto=cd['quarto'])
+
+        if cd['resolvido'] == 'sim':
+            ocorrencias = ocorrencias.filter(resolvido=True)
+        elif cd['resolvido'] == 'nao':
+            ocorrencias = ocorrencias.filter(resolvido=False)
+
+        if cd['criado_por']:
+            ocorrencias = ocorrencias.filter(
+                criado_por__username__icontains=cd['criado_por'])
+
+    context = {
+        'form': form,
+        'ocorrencias': ocorrencias,
+    }
+    return render(request, 'ocorrencias/lista.html', context)
 
 
 @login_required
@@ -41,6 +67,17 @@ def marcar_ocorrencia_resolvida(request, ocorrencia_id):
         Ocorrencia, pk=ocorrencia_id, resolvido=False)
     ocorrencia.marcar_resolvida()
     messages.success(request, "Ocorrência marcada como resolvida.")
+    return redirect("lista_ocorrencias")
+
+
+@login_required
+def desmarcar_ocorrencia_resolvida(request, ocorrencia_id):
+    ocorrencia = get_object_or_404(
+        Ocorrencia, pk=ocorrencia_id, resolvido=True)
+    ocorrencia.resolvido = False
+    ocorrencia.data_resolvido = None
+    ocorrencia.save(update_fields=["resolvido", "data_resolvido"])
+    messages.info(request, "Ocorrência marcada como pendente novamente.")
     return redirect("lista_ocorrencias")
 
 
