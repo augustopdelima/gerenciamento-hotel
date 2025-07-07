@@ -1,0 +1,39 @@
+<tr class="{% if not ocorrencia.resolvido %}table-warning{% else %}table-success{% endif %}">
+  <td>{{ ocorrencia.id }}</td>
+  <td>Quarto {{ ocorrencia.quarto.numero }}</td>
+  <td title="{{ ocorrencia.descricao }}">{{ ocorrencia.descricao|truncatechars:50 }}</td>
+  <td>{{ ocorrencia.data_registro|date:"d/m/Y" }}</td>
+  <td>
+    {% if ocorrencia.resolvido %}
+      <span class="badge bg-success">Sim</span>
+    {% else %}
+      <span class="badge bg-warning text-dark">Não</span>
+    {% endif %}
+  </td>
+  <td>{{ ocorrencia.criado_por.username }}</td>
+  <td>
+    {% if not ocorrencia.resolvido %}
+      <a href="{% url 'marcar_ocorrencia_resolvida' ocorrencia.id %}" 
+         class="btn btn-sm btn-outline-success" 
+         title="Marcar esta ocorrência como resolvida">
+         ✅ Marcar como resolvida
+      </a>
+    {% else %}
+      <span class="text-success fw-semibold" title="Ocorrência resolvida">
+        ✔️ Resolvida
+      </span>
+    {% endif %}
+   
+    <a href="{% url 'excluir_ocorrencia' ocorrencia.id %}" 
+       class="btn btn-sm btn-outline-danger" 
+       onclick="return confirm('Tem certeza que deseja excluir esta ocorrência?');" 
+       title="Excluir ocorrência">
+      Excluir 
+    </a>
+
+    <a href="{% url 'editar_ocorrencia' ocorrencia.id %}" class="btn btn-sm btn-outline-warning">
+     Editar 
+    </a>
+  </td>
+  
+</tr>

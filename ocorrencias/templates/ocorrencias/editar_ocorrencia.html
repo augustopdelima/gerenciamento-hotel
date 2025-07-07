@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <h2>Editar Ocorrência #{{ ocorrencia.id }}</h2>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="{% url 'lista_ocorrencias' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+{% endblock %}

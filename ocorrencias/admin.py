@@ -1,12 +1,11 @@
 from django.contrib import admin
-
-from ocorrencias.models import Ocorrencia
-
+from .models import Ocorrencia
 
 @admin.register(Ocorrencia)
 class OcorrenciaAdmin(admin.ModelAdmin):
-    list_display = ['descricao', 'quarto__numero',
-                    'data_registro', 'registrado_por__username', 'resolvido']
-    list_filter = ['resolvido', 'data_registro', 'quarto__numero']
-    search_fields = ['descricao', 'quarto__numero', 'registrado_por__username']
-    ordering = ['-data_registro']
+    list_display = ('id', 'quarto', 'descricao_curta', 'data_registro', 'resolvido', 'data_resolvido')
+    list_filter = ('resolvido', 'quarto', 'data_registro')
+    search_fields = ('descricao',)
+
+    def descricao_curta(self, obj):
+        return obj.descricao[:40] + ('...' if len(obj.descricao) > 40 else '')
