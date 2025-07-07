@@ -29,14 +29,14 @@
     </li>
     {% endif %}
     <li>
-        <a href="{% url 'lista_ocorrencias' %}" class="nav-link text-white {% if '/lista_ocorrencias/' in request.path %}active bg-secondary{% endif %}">
+        <a href="{% url 'lista_ocorrencias' %}" class="nav-link text-white {% if '/ocorrencias/' in request.path %}active bg-secondary{% endif %}">
             Ocorrências
         </a>
     </li>
     {% if user.is_staff %}
     <li>
         {% if request.user.is_staff %}
-        <a href="{% url 'lista_tarifas' %}" class="nav-link text-white {% if '/lista_tarifas/' in request.path %}active bg-secondary{% endif %}">
+        <a href="{% url 'lista_tarifas' %}" class="nav-link text-white {% if '/tarifas/' in request.path %}active bg-secondary{% endif %}">
             Tarifas
         </a>
         {% endif %}
