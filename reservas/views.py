@@ -1,10 +1,11 @@
-from django.shortcuts import render, redirect
+from tarifas.models import Tarifa
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
 from .models import Reserva, CheckInCheckOut, STATUS_RESERVA_CHOICES
-from .forms import ReservaForm, RelatorioReservas
+from .forms import ReservaForm, RelatorioReservas, CheckInOutFormSet
 
 STATUS_MAP = dict(STATUS_RESERVA_CHOICES)
 ORDENACAO_RESERVA_LOOKUP = {
@@ -43,6 +44,7 @@ def cadastrar_reserva(request):
         form = ReservaForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Reserva criada com sucesso.')
             return redirect('reservas:reservas')
         else:
             messages.error(request, form.errors.as_text())
@@ -61,18 +63,27 @@ def editar_reserva(request, id):
 
     if request.method == 'POST':
         form = ReservaForm(request.POST, instance=reserva)
-        if form.is_valid():
+        formset = CheckInOutFormSet(request.POST, instance=reserva)
+
+        if form.is_valid() and formset.is_valid():
+
             reserva_editada = form.save()
-            if reserva_editada.status in ["criada", "em_andamento"]:
+            formset.save()
+
+            if reserva_editada.status in ["criada", "em_andamento", "finalizada"]:
                 return redirect('reservas:reservas')
+
             else:
                 return redirect('reservas:reservas_inativas')
+
         else:
             messages.error(request, form.errors.as_text())
+
     else:
         form = ReservaForm(instance=reserva)
+        formset = CheckInOutFormSet(instance=reserva)
 
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'reserva': reserva})
+    return render(request, 'reservas/editar_reserva.html', {'form': form, 'formset': formset, 'reserva': reserva})
 
 
 @login_required
@@ -128,10 +139,10 @@ def ordenar_reservas_view(request, campo):
 
     if ativo:
         reservas = Reserva.objects.filter(
-            status__in=['criada', 'em_andamento'])
+            status__in=['criada', 'em_andamento', 'finalizada'])
     else:
         reservas = Reserva.objects.filter(
-            status__in=['cancelada', 'finalizada'])
+            status__in=['cancelada'])
 
     if busca:
         reservas = reservas.filter(cliente__nome__icontains=busca)
@@ -183,6 +194,33 @@ def gerar_relatorio_reservas(request):
         'reservas': reservas,
     }
     return render(request, 'reservas/relatorio_reservas.html', context)
+
+
+@login_required
+def detalhes_reserva(request, reserva_id):
+    reserva = get_object_or_404(Reserva.objects.select_related(
+        "quarto__tipo", "cliente", "funcionario"), pk=reserva_id)
+
+    tarifa = (
+        Tarifa.objects
+        .filter(
+            tipo_quarto=reserva.quarto.tipo,
+            ativa=True,
+            data_inicio__lte=reserva.data_entrada,
+            data_fim__gte=reserva.data_saida,
+        )
+        .order_by("-data_inicio")
+        .first()
+    )
+
+    checkin = getattr(reserva, "checkincheckout", None)
+
+    context = {
+        "reserva": reserva,
+        "tarifa": tarifa,
+        "check": checkin,
+    }
+    return render(request, "reservas/detalhes.html", context)
 
 
 # CheckIn

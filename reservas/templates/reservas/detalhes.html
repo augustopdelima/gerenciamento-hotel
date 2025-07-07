@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+
+  <h2 class="mb-3">Detalhes da Reserva #{{ reserva.pk }}</h2>
+
+  <!-- Dados do cliente -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white">Cliente</div>
+    <div class="card-body">
+      <p><strong>Nome:</strong> {{ reserva.cliente.nome }}</p>
+      <p><strong>E‑mail:</strong> {{ reserva.cliente.email }}</p>
+    </div>
+  </div>
+
+  <!-- Dados do quarto -->
+  <div class="card mb-3 shadow-sm">
+    <div class="row g-0">
+      {% if reserva.quarto.foto %}
+        <div class="col-md-4">
+          <img src="{{ reserva.quarto.foto.url }}" class="img-fluid w-100 rounded-start" alt="Foto do quarto">
+        </div>
+      {% endif %}
+      <div class="col">
+        <div class="card-header bg-info text-white">Quarto</div>
+        <div class="card-body">
+          <p><strong>Número:</strong> {{ reserva.quarto.numero }}</p>
+          <p><strong>Andar:</strong> {{ reserva.quarto.andar }}</p>
+          <p><strong>Tipo:</strong> {{ reserva.quarto.tipo.nome }}</p>
+          <p><strong>Status do quarto:</strong> {{ reserva.quarto.get_status_display }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Período e status da reserva -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-secondary text-white">Reserva</div>
+    <div class="card-body">
+      <p><strong>Entrada:</strong> {{ reserva.data_entrada|date:"d/m/Y" }}</p>
+      <p><strong>Saída:</strong> {{ reserva.data_saida|date:"d/m/Y" }}</p>
+      <p><strong>Status:</strong>
+        <span class="badge
+          {% if reserva.status == 'criada' %}bg-secondary
+          {% elif reserva.status == 'em_andamento' %}bg-warning text-dark
+          {% elif reserva.status == 'finalizada' %}bg-success
+          {% elif reserva.status == 'cancelada' %}bg-danger
+          {% else %}bg-dark{% endif %}">
+          {{ reserva.get_status_display }}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Tarifa -->
+  {% if tarifa %}
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-success text-white">Tarifa</div>
+    <div class="card-body">
+      <p><strong>Valor diária:</strong> R$ {{ tarifa.valor }}</p>
+      {% if tarifa.temporada %}<p><strong>Temporada:</strong> {{ tarifa.get_temporada_display }}</p>{% endif %}
+      <p><small>Período de vigência da tarifa: {{ tarifa.data_inicio|date:"d/m/Y" }} – {{ tarifa.data_fim|date:"d/m/Y" }}</small></p>
+    </div>
+  </div>
+  {% else %}
+    <div class="alert alert-warning">Não há tarifa cadastrada para este tipo de quarto no período da reserva.</div>
+  {% endif %}
+
+  <!-- Check‑in / Check‑out -->
+  {% if check %}
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-dark text-white">Check‑in / Check‑out</div>
+    <div class="card-body">
+      <p><strong>Check‑in por:</strong> {{ check.funcionario_checkin.get_full_name }}</p>
+      <p><strong>Data:</strong> {{ check.data_checkin|date:"d/m/Y H:i" }}</p>
+      {% if check.data_checkout %}
+        <p><strong>Check‑out por:</strong> {{ check.funcionario_checkout.get_full_name }}</p>
+        <p><strong>Data:</strong> {{ check.data_checkout|date:"d/m/Y H:i" }}</p>
+      {% else %}
+        <p><em>Ainda não realizado check‑out.</em></p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Botões -->
+  <div class="d-flex gap-2">
+    <a href="{% url 'reservas:editar_reserva' reserva.pk %}" class="btn btn-outline-warning">Editar</a>
+    <a href="{% url 'reservas:reservas' %}" class="btn btn-secondary">Voltar</a>
+  </div>
+
+</div>
+{% endblock %}

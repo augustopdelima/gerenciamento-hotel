@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reserva, STATUS_RESERVA_CHOICES
+from .models import Reserva, STATUS_RESERVA_CHOICES, CheckInCheckOut
 from quartos.models import TipoQuarto
 from quartos.models import Quarto
 
@@ -18,7 +18,7 @@ class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
         fields = ['data_entrada', 'data_saida', 'cliente',
-                  'funcionario', 'quarto', 'status']
+                  'funcionario', 'quarto']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -30,6 +30,15 @@ class ReservaForm(forms.ModelForm):
             qs = qs | Quarto.objects.filter(pk=self.instance.quarto.pk)
 
         self.fields["quarto"].queryset = qs
+
+        if self.instance.pk:
+            # Adiciona o campo status dinamicamente
+            self.fields['status'] = forms.ChoiceField(
+                choices=Reserva._meta.get_field('status').choices,
+                initial=self.instance.status,
+                label="Status",
+                widget=forms.Select(attrs={'class': 'form-select'})
+            )
 
 
 class RelatorioReservas(forms.Form):
@@ -77,3 +86,31 @@ class RelatorioReservas(forms.Form):
             'class': 'form-select'
         })
     )
+
+
+class CheckInOutForm(forms.ModelForm):
+    data_checkin = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        required=True
+    )
+    data_checkout = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+        required=False
+    )
+
+    class Meta:
+        model = CheckInCheckOut
+        fields = ['funcionario_checkin', 'data_checkin',
+                  'funcionario_checkout', 'data_checkout']
+
+
+CheckInOutFormSet = forms.inlineformset_factory(
+    parent_model=Reserva,
+    model=CheckInCheckOut,
+    form=CheckInOutForm,
+    extra=0,       # 0 = só mostra se já existir; mude para 1 se quiser criar
+    max_num=1,
+    can_delete=False,
+)
