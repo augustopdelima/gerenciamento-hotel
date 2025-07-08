@@ -124,7 +124,7 @@ CheckInOutFormSet = forms.inlineformset_factory(
     parent_model=Reserva,
     model=CheckInCheckOut,
     form=CheckInOutForm,
-    extra=0,       # 0 = só mostra se já existir; mude para 1 se quiser criar
+    extra=0,
     max_num=1,
     can_delete=False,
 )
