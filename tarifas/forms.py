@@ -4,18 +4,18 @@ from quartos.models import TipoQuarto
 
 
 class TarifaForm(forms.ModelForm):
-    data_inicio = forms.DateTimeField(
+    data_inicio = forms.DateField(
         required=False,
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d'],
     )
 
-    data_fim = forms.DateTimeField(
+    data_fim = forms.DateField(
         required=False,
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-        input_formats=['%Y-%m-%dT%H:%M'],
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d'],
     )
 
     class Meta:
@@ -25,22 +25,22 @@ class TarifaForm(forms.ModelForm):
 
 
 class RelatorioTarifas(forms.Form):
-    data_inicio = forms.DateTimeField(
+    data_inicio = forms.DateField(
         required=False,
         label="Data de Início",
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local', 'class': 'form-control'}
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'}
         ),
-        input_formats=['%Y-%m-%dT%H:%M'],
+        input_formats=['%Y-%m-%d'],
     )
 
-    data_fim = forms.DateTimeField(
+    data_fim = forms.DateField(
         required=False,
         label="Data de Fim",
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local', 'class': 'form-control'}
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'}
         ),
-        input_formats=['%Y-%m-%dT%H:%M'],
+        input_formats=['%Y-%m-%d'],
     )
 
     tipo_quarto = forms.ModelChoiceField(
