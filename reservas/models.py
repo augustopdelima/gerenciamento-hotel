@@ -113,9 +113,10 @@ class CheckInCheckOut(models.Model):
         on_delete=models.RESTRICT,
         null=True,
         related_name="checkouts_realizados",
+        blank=True,
     )
 
-    data_checkout = models.DateTimeField(null=True)
+    data_checkout = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         checkout_str = (
