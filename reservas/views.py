@@ -1,8 +1,10 @@
+from django.shortcuts import get_object_or_404, redirect, render
 from tarifas.models import Tarifa
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 from .models import Reserva, CheckInCheckOut, STATUS_RESERVA_CHOICES
 from .forms import ReservaForm, RelatorioReservas, CheckInOutFormSet
@@ -57,43 +59,37 @@ def cadastrar_reserva(request):
 
 @login_required
 def editar_reserva(request, id):
-    try:
-        reserva = Reserva.objects.get(id=id)
-    except Reserva.DoesNotExist:
-        return redirect('reservas:reservas')
+    reserva = get_object_or_404(Reserva, id=id)
 
     if request.method == 'POST':
         form = ReservaForm(request.POST, instance=reserva)
         formset = CheckInOutFormSet(request.POST, instance=reserva)
-
         formset_enviado = 'form-TOTAL_FORMS' in request.POST
 
-        form_valido = form.is_valid()
-        formset_valido = formset.is_valid() if formset_enviado else True
-
-        if form_valido and formset_valido:
+        if form.is_valid() and (formset.is_valid() if formset_enviado else True):
             reserva_editada = form.save(commit=False)
 
             if 'funcionario' in form.fields:
                 reserva_editada.funcionario = form.cleaned_data.get(
                     'funcionario')
 
-            if 'status' in form.fields:
-                reserva_editada.status = form.cleaned_data.get('status')
-
-            reserva_editada.save()
-
-            if formset_enviado:
-                formset.save()
-
-            if reserva_editada.status in ["criada", "em_andamento", "finalizada"]:
-                return redirect('reservas:reservas')
+            try:
+                reserva_editada.save()
+            except ValidationError as e:
+                for campo, mensagens in e.message_dict.items():
+                    for msg in mensagens:
+                        form.add_error(campo, msg)
+                messages.error(
+                    request, "Erro ao salvar. Verifique os dados do formulário.")
             else:
-                return redirect('reservas:reservas_inativas')
-
-        messages.error(
-            request, "Erro ao salvar. Verifique os dados do formulário.")
-
+                if formset_enviado:
+                    formset.save()
+                redirect_url = 'reservas:reservas' if reserva_editada.status in [
+                    "criada", "em_andamento", "finalizada"] else 'reservas:reservas_inativas'
+                return redirect(redirect_url)
+        else:
+            messages.error(
+                request, "Erro ao salvar. Verifique os dados do formulário.")
     else:
         form = ReservaForm(instance=reserva)
         formset = CheckInOutFormSet(instance=reserva)

@@ -40,13 +40,6 @@ class ReservaForm(forms.ModelForm):
         self.fields["cliente"].queryset = cs
 
         if self.instance.pk:
-            # Adiciona o campo status dinamicamente
-            self.fields['status'] = forms.ChoiceField(
-                choices=Reserva._meta.get_field('status').choices,
-                initial=self.instance.status,
-                label="Status",
-                widget=forms.Select(attrs={'class': 'form-select'})
-            )
 
             funcionarios_qs = User.objects.filter(is_active=True)
 
