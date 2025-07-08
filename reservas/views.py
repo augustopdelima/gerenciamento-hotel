@@ -1,3 +1,4 @@
+from copy import copy
 from django.shortcuts import get_object_or_404, redirect, render
 from tarifas.models import Tarifa
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,7 +8,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 
 from .models import Reserva, CheckInCheckOut, STATUS_RESERVA_CHOICES
-from .forms import ReservaForm, RelatorioReservas, CheckInOutFormSet
+from .forms import ReservaForm, RelatorioReservas
 
 STATUS_MAP = dict(STATUS_RESERVA_CHOICES)
 ORDENACAO_RESERVA_LOOKUP = {
@@ -57,16 +58,35 @@ def cadastrar_reserva(request):
     return render(request, 'reservas/cadastrar_reserva.html', {'form': form})
 
 
+def validar_edicao_reserva(reserva_antiga, reserva_nova):
+
+    if reserva_antiga.status in ("cancelada", "finalizada"):
+
+        raise ValidationError({
+            "__all__": f"Não é permitido editar os campos de uma reserva {reserva_antiga.status}."
+        })
+
+    if reserva_antiga.status == "em_andamento":
+        campos_bloqueados = ['cliente', 'quarto', 'data_entrada']
+        campos_editados = []
+        for campo in campos_bloqueados:
+            if getattr(reserva_nova, campo) != getattr(reserva_antiga, campo):
+                campos_editados.append(campo)
+        if campos_editados:
+            raise ValidationError({
+                "__all__": f"Não é permitido alterar os campos cliente, quarto, data de entrada enquanto a reserva está em andamento."
+            })
+
+
 @login_required
 def editar_reserva(request, id):
     reserva = get_object_or_404(Reserva, id=id)
+    reserva_antiga = copy(reserva)
 
     if request.method == 'POST':
         form = ReservaForm(request.POST, instance=reserva)
-        formset = CheckInOutFormSet(request.POST, instance=reserva)
-        formset_enviado = 'form-TOTAL_FORMS' in request.POST
 
-        if form.is_valid() and (formset.is_valid() if formset_enviado else True):
+        if form.is_valid():
             reserva_editada = form.save(commit=False)
 
             if 'funcionario' in form.fields:
@@ -74,6 +94,7 @@ def editar_reserva(request, id):
                     'funcionario')
 
             try:
+                validar_edicao_reserva(reserva_antiga, reserva_editada)
                 reserva_editada.save()
             except ValidationError as e:
                 for campo, mensagens in e.message_dict.items():
@@ -82,8 +103,6 @@ def editar_reserva(request, id):
                 messages.error(
                     request, "Erro ao salvar. Verifique os dados do formulário.")
             else:
-                if formset_enviado:
-                    formset.save()
                 redirect_url = 'reservas:reservas' if reserva_editada.status in [
                     "criada", "em_andamento", "finalizada"] else 'reservas:reservas_inativas'
                 return redirect(redirect_url)
@@ -92,11 +111,9 @@ def editar_reserva(request, id):
                 request, "Erro ao salvar. Verifique os dados do formulário.")
     else:
         form = ReservaForm(instance=reserva)
-        formset = CheckInOutFormSet(instance=reserva)
 
     return render(request, 'reservas/editar_reserva.html', {
         'form': form,
-        'formset': formset,
         'reserva': reserva
     })
 

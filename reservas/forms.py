@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reserva, STATUS_RESERVA_CHOICES, CheckInCheckOut
+from .models import Reserva, STATUS_RESERVA_CHOICES
 from quartos.models import TipoQuarto, Quarto
 from clientes.models import Cliente
 from django.contrib.auth.models import User
@@ -100,31 +100,3 @@ class RelatorioReservas(forms.Form):
             'class': 'form-select'
         })
     )
-
-
-class CheckInOutForm(forms.ModelForm):
-    data_checkin = forms.DateTimeField(
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-        required=True
-    )
-    data_checkout = forms.DateTimeField(
-        widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
-        required=False
-    )
-
-    class Meta:
-        model = CheckInCheckOut
-        fields = ['funcionario_checkin', 'data_checkin',
-                  'funcionario_checkout', 'data_checkout']
-
-
-CheckInOutFormSet = forms.inlineformset_factory(
-    parent_model=Reserva,
-    model=CheckInCheckOut,
-    form=CheckInOutForm,
-    extra=0,
-    max_num=1,
-    can_delete=False,
-)
