@@ -42,10 +42,7 @@
                 Detalhes
             </a> 
 
-            {% if reserva.status == 'cancelada' %}
-            <a href="{% url 'reservas:ativar_reserva' reserva.id %}" class="btn btn-outline-secondary btn-sm">Ativar
-                Reserva</a>
-            {% else %}
+            {% if reserva.status != 'cancelada' and reserva.status != 'ocupada' %}
             <a href="{% url 'reservas:excluir_reserva' reserva.id %}" class="btn btn-outline-danger btn-sm">Excluir
                 Reserva</a>
             {% endif %}

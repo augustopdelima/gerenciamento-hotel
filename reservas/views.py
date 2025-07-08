@@ -109,6 +109,9 @@ def editar_reserva(request, id):
 def excluir_reserva(request, id):
     try:
         reserva = Reserva.objects.get(id=id)
+        if reserva.status in ['em_andamento']:
+            messages.error(request, "Reserva em andamento")
+            return redirect('reservas:reservas')
         reserva.status = 'cancelada'
         reserva.save()
         messages.success(request, "Reserva excluída com sucesso.")
@@ -117,24 +120,6 @@ def excluir_reserva(request, id):
         messages.error(request, "Reserva não encontrada.")
 
     return redirect('reservas:reservas')
-
-
-@login_required
-def ativar_reserva(request, id):
-    try:
-        reserva = Reserva.objects.get(id=id)
-    except Reserva.DoesNotExist:
-        messages.error(request, "Reserva não encontrada.")
-        return redirect('reservas:reservas_inativas')
-
-    if reserva.status == 'cancelada':
-        reserva.status = 'criada'
-        reserva.save()
-        messages.success(request, "Reserva reativada com sucesso.")
-    else:
-        messages.info(request, "A reserva já está ativa.")
-
-    return redirect('reservas:reservas_inativas')
 
 
 @login_required
