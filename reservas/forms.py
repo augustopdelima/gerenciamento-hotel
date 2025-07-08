@@ -1,7 +1,8 @@
 from django import forms
 from .models import Reserva, STATUS_RESERVA_CHOICES, CheckInCheckOut
-from quartos.models import TipoQuarto
-from quartos.models import Quarto
+from quartos.models import TipoQuarto, Quarto
+from clientes.models import Cliente
+from django.contrib.auth.models import User
 
 
 class ReservaForm(forms.ModelForm):
@@ -17,19 +18,26 @@ class ReservaForm(forms.ModelForm):
 
     class Meta:
         model = Reserva
-        fields = ['data_entrada', 'data_saida', 'cliente',
-                  'funcionario', 'quarto']
+        fields = ['data_entrada', 'data_saida', 'cliente', 'quarto']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # mostra apenas os quartos disponíveis
-        qs = Quarto.objects.filter(status="disponivel")
+        qs = Quarto.objects.filter(
+            status__in=["disponivel", "reservado", "ocupado"])
+
+        cs = Cliente.objects.filter(ativo=True)
 
         # se estiver editando, garante que o quarto já associado apareça
         if self.instance.pk and self.instance.quarto:
             qs = qs | Quarto.objects.filter(pk=self.instance.quarto.pk)
 
+        if self.instance.pk and self.instance.cliente:
+            cs = cs | Cliente.objects.filter(pk=self.instance.cliente.pk)
+
         self.fields["quarto"].queryset = qs
+
+        self.fields["cliente"].queryset = cs
 
         if self.instance.pk:
             # Adiciona o campo status dinamicamente
@@ -38,6 +46,19 @@ class ReservaForm(forms.ModelForm):
                 initial=self.instance.status,
                 label="Status",
                 widget=forms.Select(attrs={'class': 'form-select'})
+            )
+
+            funcionarios_qs = User.objects.filter(is_active=True)
+
+            if self.instance.funcionario:
+                funcionarios_qs = funcionarios_qs | User.objects.filter(
+                    pk=self.instance.funcionario.pk)
+
+            self.fields['funcionario'] = forms.ModelChoiceField(
+                queryset=funcionarios_qs.distinct(),
+                label="Funcionário",
+                widget=forms.Select(attrs={'class': 'form-select'}),
+                initial=self.instance.funcionario.pk if self.instance.funcionario else None,
             )
 
 

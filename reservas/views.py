@@ -43,11 +43,12 @@ def cadastrar_reserva(request):
     if request.method == 'POST':
         form = ReservaForm(request.POST)
         if form.is_valid():
-            form.save()
+            reserva = form.save(commit=False)
+            reserva.funcionario = request.user
+            reserva.save()
             messages.success(request, 'Reserva criada com sucesso.')
             return redirect('reservas:reservas')
-        else:
-            messages.error(request, form.errors.as_text())
+
     else:
         form = ReservaForm()
 
@@ -65,25 +66,43 @@ def editar_reserva(request, id):
         form = ReservaForm(request.POST, instance=reserva)
         formset = CheckInOutFormSet(request.POST, instance=reserva)
 
-        if form.is_valid() and formset.is_valid():
+        formset_enviado = 'form-TOTAL_FORMS' in request.POST
 
-            reserva_editada = form.save()
-            formset.save()
+        form_valido = form.is_valid()
+        formset_valido = formset.is_valid() if formset_enviado else True
+
+        if form_valido and formset_valido:
+            reserva_editada = form.save(commit=False)
+
+            if 'funcionario' in form.fields:
+                reserva_editada.funcionario = form.cleaned_data.get(
+                    'funcionario')
+
+            if 'status' in form.fields:
+                reserva_editada.status = form.cleaned_data.get('status')
+
+            reserva_editada.save()
+
+            if formset_enviado:
+                formset.save()
 
             if reserva_editada.status in ["criada", "em_andamento", "finalizada"]:
                 return redirect('reservas:reservas')
-
             else:
                 return redirect('reservas:reservas_inativas')
 
-        else:
-            messages.error(request, form.errors.as_text())
+        messages.error(
+            request, "Erro ao salvar. Verifique os dados do formulário.")
 
     else:
         form = ReservaForm(instance=reserva)
         formset = CheckInOutFormSet(instance=reserva)
 
-    return render(request, 'reservas/editar_reserva.html', {'form': form, 'formset': formset, 'reserva': reserva})
+    return render(request, 'reservas/editar_reserva.html', {
+        'form': form,
+        'formset': formset,
+        'reserva': reserva
+    })
 
 
 @login_required

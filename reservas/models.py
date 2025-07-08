@@ -36,13 +36,13 @@ class Reserva(models.Model):
         if self.status in ("cancelada", "finalizada"):
             return
 
-        # 1. datas coerentes
+        # verifica datas coerentes
         if self.data_entrada and self.data_saida and self.data_entrada >= self.data_saida:
             raise ValidationError({
                 "data_saida": "A data de saída deve ser posterior à data de entrada."
             })
 
-        # 2. quarto não pode estar fora de serviço
+        # quarto não pode estar fora de serviço
         if self.quarto and self.quarto.status in ["manutencao", "indisponivel"]:
             raise ValidationError({
                 "quarto": f"O quarto {self.quarto.numero} está {self.quarto.get_status_display().lower()}."
