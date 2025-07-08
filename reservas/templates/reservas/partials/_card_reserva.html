@@ -36,8 +36,14 @@
             {% endif %}
         </div>
         <div class="card-footer bg-transparent border-0" >
-            <a href="{% url 'reservas:editar_reserva' reserva.id %}" class="btn btn-outline-warning btn-sm">Editar
+
+            {% if reserva.status != 'finalizada' and reserva.status != 'cancelada'  %}
+
+                <a href="{% url 'reservas:editar_reserva' reserva.id %}" class="btn btn-outline-warning btn-sm">Editar
                 Reserva</a>
+
+            {% endif%}
+
             <a href="{% url 'reservas:detalhes_reserva' reserva.id %}" class="btn btn-outline-primary btn-sm">
                 Detalhes
             </a> 
