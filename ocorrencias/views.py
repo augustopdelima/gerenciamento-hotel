@@ -76,7 +76,7 @@ def desmarcar_ocorrencia_resolvida(request, ocorrencia_id):
         Ocorrencia, pk=ocorrencia_id, resolvido=True)
     ocorrencia.resolvido = False
     ocorrencia.data_resolvido = None
-    ocorrencia.save(update_fields=["resolvido", "data_resolvido"])
+    ocorrencia.save()
     messages.info(request, "Ocorrência marcada como pendente novamente.")
     return redirect("lista_ocorrencias")
 

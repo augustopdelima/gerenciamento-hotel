@@ -53,6 +53,10 @@ def sync_quarto_apos_save(sender, instance, created, **kwargs):
             quarto.status = "manutencao"
             quarto.save(update_fields=["status"])
 
+        elif (not instance.resolvido) and quarto.status in ["disponivel", "manutencao", "indisponivel"]:
+            quarto.status = "manutencao"
+            quarto.save(update_fields=["status"])
+
         # Se foi editada para resolvida
         elif instance.resolvido and quarto.status == "manutencao":
             pendentes = Ocorrencia.objects.filter(
